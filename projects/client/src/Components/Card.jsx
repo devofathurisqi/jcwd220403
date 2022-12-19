@@ -16,11 +16,14 @@ import {motion} from "framer-motion"
 function HomeCard() {
     const [data, setData] = useState()
     const [loading, setLoading] = useState(false)
-    const cord = {}
-    const url = "https://public.opendatasoft.com/api/records/1.0/search/?dataset=airbnb-listings&q=indonesia&rows=100&start=1&sort&facet=host_response_time&facet=host_response_rate&facet=host_verifications&facet=city&facet=country&facet=property_type&facet=room_type&facet=bed_type&facet=amenities&facet=availability_365&facet=cancellation_policy&refine.features=Require+Guest+Phone+Verification"
 
-    cord.lat = localStorage.getItem("lat")
-    cord.lng = localStorage.getItem("lng")
+    //data ini masih di tembak, berikut adalah lat dan lng indonesia
+    const cord = {
+        lat : -6.200000,
+        lng: 106.816666
+    }
+    
+    const url = "https://public.opendatasoft.com/api/records/1.0/search/?dataset=airbnb-listings&q=indonesia&rows=100&start=1&sort&facet=host_response_time&facet=host_response_rate&facet=host_verifications&facet=city&facet=country&facet=property_type&facet=room_type&facet=bed_type&facet=amenities&facet=availability_365&facet=cancellation_policy&refine.features=Require+Guest+Phone+Verification"
 
     const getdata = async () => {
         try {
