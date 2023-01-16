@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit"
 const doneCreateData = createSlice({
     name:"doneCreateData",
     initialState: {
-        isDone : false
+        isDone : false,
+        isDeleteProperty: false
     },
     reducers: {
         isDoneCreate: (state) => {
@@ -11,9 +12,12 @@ const doneCreateData = createSlice({
         },
         isDeleteData: (state) => {
             state.isDone = false
+        },
+        isDeletePropertyData: (state) => {
+            state.isDeleteProperty = true
         }
     }
 })
 
-export const {isDoneCreate, isDeleteData} = doneCreateData.actions
+export const {isDoneCreate, isDeleteData, isDeletePropertyData} = doneCreateData.actions
 export default doneCreateData.reducer

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Box, Text, Center, FormControl, FormLabel, Input, FormHelperText, Spinner, Button, useMediaQuery, useBreakpointValue } from "@chakra-ui/react"
-import axios from "axios"
+import axios from "../../api/axios"
 import { BsCheckLg } from "react-icons/bs"
 import { useDispatch } from "react-redux"
 import { submitClickedToFalse } from '../../Redux/ButtonSlice';
@@ -11,6 +11,7 @@ const InputRoom = () => {
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
     const [price, setPrice] = useState()
+    const [picture, setPicture] = useState(null);
     const [load, setLoad] = useState(false)
     const [errorMsg, setErrorMsg] = useState("")
     const [checklis, setChecklist] = useState(false)
@@ -26,13 +27,26 @@ const InputRoom = () => {
     })
     const dispatch = useDispatch()
 
+    const handlePictureChange = (e) => {
+        setPicture(e.target.files[0]);
+    }
 
     const handleSubmit = async () => {
         try {
-            await axios.post("http://localhost:2000/api/room/1", {
-                name,
-                description,
-                price
+            const formData = new FormData()
+            formData.append('name', name)
+            formData.append('description', description)
+            formData.append('price', price)
+            formData.append('file', picture)
+
+            const config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+
+            await axios.post("/room/1", formData, config, {
+                withCredentials: true
             })
             setLoad(true)
             setTimeout(() => {
@@ -85,6 +99,13 @@ const InputRoom = () => {
                                 />
                                 {isErrorPrice ? (<FormHelperText color="red">Price is required</FormHelperText>) :
                                     (<FormHelperText color="#478fd3">Create price success</FormHelperText>)}
+                            </FormControl>
+                            <FormControl>
+                                <FormLabel>Picture</FormLabel>
+                                <Input type="file"
+                                    variant="flushed"
+                                    onChange={handlePictureChange}
+                                />
                             </FormControl>
                             <Text color="red" marginTop="10px" textAlign='center'>{errorMsg}</Text>
                             <Center>

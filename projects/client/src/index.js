@@ -6,7 +6,6 @@ import App from "./App";
 import { AuthProvider } from "./context/AuthProvider";
 
 // redux
-
 import { Provider } from "react-redux";
 import Store from "./Redux/Store";
 

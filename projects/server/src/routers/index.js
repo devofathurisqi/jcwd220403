@@ -3,6 +3,7 @@ const tenantRouters = require("./tenantRouters");
 const refresh = require("./refresh");
 const logout = require("./logout");
 const authRouters = require("./authRouters");
+const pagesRouters = require("./pagesRouters")
 
 module.exports = {
   userRouters,
@@ -10,4 +11,5 @@ module.exports = {
   refresh,
   logout,
   authRouters,
+  pagesRouters
 };

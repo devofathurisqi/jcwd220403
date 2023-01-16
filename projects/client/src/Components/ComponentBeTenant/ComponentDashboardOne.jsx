@@ -323,7 +323,7 @@ const DashboardOne = () => {
                     <Grid templateColumns="repeat(auto-fit, minmax(200px, 1fr))" gap={6}>
                         <Box shadow="md" p={4}>
                             <Box position="relative">
-                                <Image src={data.picture} cursor="pointer" style={{ filter: hover ? "brightness(30%)" : "none" }} />
+                                <Image src={'http://localhost:2000/propertyPicture/' +data.picture} cursor="pointer" style={{ filter: hover ? "brightness(30%)" : "none" }} />
                                 <Tooltip label="Change Picture?" fontSize="md" placement="top" openDelay={300} color="black" bg="white">
                                     <Button onClick={onOpen} style={{
                                         position: "absolute", top: "0", left: "0", right: "0", bottom: "0",

@@ -5,7 +5,7 @@ const bearerToken = require('express-bearer-token');
 const { join } = require('path');
 const database = require('./models');
 const verifyJWT = require('./middlewares/verifyJWT');
-const { authRouters, userRouters, refresh, logout, tenantRouters } = require('./routers');
+const { authRouters, userRouters, refresh, logout, tenantRouters, pagesRouters } = require('./routers');
 const middlewareDetect = require('./middlewares/deviceDetector');
 const cookieParser = require('cookie-parser');
 const PORT = process.env.SERVER_PORT || 8000;
@@ -44,7 +44,7 @@ app.use(userRouters);
 
 app.use(refresh);
 app.use(logout);
-
+app.use(pagesRouters)
 app.use(tenantRouters)
 // app.use(express.static("./public/propertyPicture"))
 // app.use(express.static(join(__dirname, "../public/propertyPicture")));

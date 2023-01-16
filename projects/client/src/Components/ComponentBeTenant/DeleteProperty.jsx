@@ -7,6 +7,7 @@ import {
 import { useDispatch, useSelector } from "react-redux"
 import { closeModal } from '../../Redux/ModalSlice'
 import { isDeleteData } from '../../Redux/DoneCreatePropertiesSlice'
+import { isDeletePropertyData } from '../../Redux/DoneCreatePropertiesSlice'
 import axios from "axios"
 
 
@@ -27,6 +28,7 @@ const DeleteProperty = () => {
                 setLoad(false)
             }, 2000)
             dispatch(isDeleteData())
+            dispatch(isDeletePropertyData())
             window.location.reload()
         } catch (err) {
             console.log(err)
