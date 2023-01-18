@@ -35,7 +35,7 @@ router.patch('/api/editlocation/:tenantId', tenantControllers.updateLocationDeta
 router.patch('/api/editroom/:tenantId/:id',roomUpload.single('file'), tenantControllers.updateRoomProperty);
 
 //delete all data property
-router.delete('/api/deleteproperty/:id', tenantControllers.deleteAllDataProperty);
+router.delete('/api/deleteproperty/:tenantId', tenantControllers.deleteAllDataProperty);
 router.delete('/api/deleteroom/:id', tenantControllers.deleteDataRooms);
 router.delete('/api/deleteroomimage/:id', tenantControllers.deleteRoomImages);
 router.delete('/api/deletepropertyimage/:id', tenantControllers.deletePropertyImage);

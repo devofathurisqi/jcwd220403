@@ -11,7 +11,6 @@ import { Carousel } from 'react-responsive-carousel';
 
 function HomeCard() {
     const [currentData, setCurrentData] = useState()
-    console.log(currentData)
     const [loading, setLoading] = useState(false);
 
     const getdata = async () => {
@@ -114,6 +113,9 @@ function HomeCard() {
                                                     {item.description}
                                                 </Text>
                                             </Text> */}
+                                            <Text fontSize="sm" fontWeight="bold" color="gray.400" display="inline">
+                                            {item.category.country}, {item.category.province}, {item.category.city}
+                                            </Text>
                                         </Box>
                                     </Box>
                                 );

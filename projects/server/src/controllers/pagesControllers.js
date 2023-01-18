@@ -9,6 +9,9 @@ module.exports = {
                     {
                         model: database.propertypicture,
                         attributes: [[sequelize.col('name'),'picture']]
+                    },
+                    {
+                        model:database.category
                     }
                 ]
             })

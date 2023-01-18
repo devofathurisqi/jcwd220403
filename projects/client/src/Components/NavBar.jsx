@@ -35,6 +35,7 @@ const NavBar = () => {
   const OnlyHome = location.pathname === '/';
   // const isDoneCreateData = useSelector((state) => state.DoneCreatePropertiesSlice.isDone)
   const { auth } = useAuth();
+  console.log(auth)
   const logout = useLogout();
   const navigate = useNavigate();
 
@@ -142,7 +143,7 @@ const NavBar = () => {
                     _hover={{ cursor: 'pointer' }}
                   >
                     <Icon as={HamburgerIcon} mr='2' ml='1' />
-                    <Avatar size='sm' name='Devofathurisqi' bgColor='#FE9900' />
+                    <Avatar size='sm' name={auth.name} bgColor='#FE9900' src='' />
                   </Tag>
                 </MenuButton>
                 {auth?.accessToken ? (

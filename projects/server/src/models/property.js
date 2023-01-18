@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: false,
         },
       });
-      property.hasMany(models.room);
+      property.hasMany(models.room, { onDelete: 'cascade' });
       property.belongsToMany(models.facility, { through: 'propertyFacility' });
       property.hasMany(models.propertypicture)
     }

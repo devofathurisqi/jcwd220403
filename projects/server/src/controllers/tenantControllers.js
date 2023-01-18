@@ -373,26 +373,19 @@ module.exports = {
     },
     deleteAllDataProperty: async (req, res) => {
         try {
-            //harusnya id di ambil dari tenantId yang sedang login
-            await database.property.destroy({
+            const property = await database.property.destroy({
                 where: {
-                    id: req.params.id
+                    tenantId: req.params.tenantId
                 }
             })
             await database.category.destroy({
                 where: {
-                    id: req.params.id
+                    id: property.id
                 }
             })
             await database.facility.destroy({
                 where: {
-                    id: req.params.id
-                }
-            })
-            await database.room.destroy({
-                //harusnya propertyId nanti berdasarkan propertyId yang dimana propertyId itu berdasrkan tenantId
-                where: {
-                    propertyId: req.params.id
+                    id: property.id
                 }
             })
             res.status(200).send("Property Deleted")

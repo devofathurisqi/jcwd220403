@@ -335,7 +335,7 @@ const DashboardOne = () => {
                                     showArrows={true}>
                                     {data.propertypictures.map((image, i) => (
                                         <Box key={i}>
-                                            <Image cursor="pointer" style={{ filter: hover ? "brightness(30%)" : "none" }} src={`http://localhost:2000/propertyPicture/${image.picture}`} />
+                                            <Image cursor="pointer" height="auto" style={{ filter: hover ? "brightness(30%)" : "none" }} src={`http://localhost:2000/propertyPicture/${image.picture}`} />
                                         </Box>
                                     ))}
                                 </Carousel>
