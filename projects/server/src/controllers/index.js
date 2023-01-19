@@ -5,6 +5,7 @@ const refreshTokenController = require('./refreshTokenController');
 const logoutController = require('./logoutController');
 const RegisterAsTenant = require('./registerAsTenantController');
 const pagesControllers = require("./pagesControllers")
+const roomControllers = require("./roomsControllers")
 
 module.exports = {
   authControllers,
@@ -13,5 +14,6 @@ module.exports = {
   refreshTokenController,
   logoutController,
   RegisterAsTenant,
-  pagesControllers
+  pagesControllers,
+  roomControllers
 };

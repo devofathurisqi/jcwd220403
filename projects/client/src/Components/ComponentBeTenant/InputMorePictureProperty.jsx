@@ -56,6 +56,7 @@ const InputMorePictureProperty = () => {
                 setLoad(false)
                 dispatch(closeDrawerForMorePicture())
                 getImagesProperty()
+                window.location.reload()
                 toast({
                     title: 'Success',
                     description: 'Picture has been created',
@@ -76,6 +77,7 @@ const InputMorePictureProperty = () => {
         try {
             await axios.delete(`/deletepropertyimage/${image.id}`)
             getImagesProperty()
+            window.location.reload()
             toast({
                 title: 'Success',
                 description: 'Picture has been deleted',

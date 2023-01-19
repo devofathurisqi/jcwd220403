@@ -11,6 +11,7 @@ import { BsPlusSquareDotted } from "react-icons/bs"
 import { BiEdit } from "react-icons/bi"
 import { AiOutlineDelete, AiOutlineCloudUpload } from "react-icons/ai"
 import { ImFilePicture } from "react-icons/im"
+import {TbHomeOff, TbHome} from "react-icons/tb"
 import "react-responsive-carousel/lib/styles/carousel.min.css"; 
 import { Carousel } from 'react-responsive-carousel';
 import useAuth from '../../hooks/useAuth'
@@ -252,6 +253,31 @@ const ComponentDashboardTwo = () => {
         }
     }
 
+    const handleAlvaibleRoom = async (room) => {
+        console.log(room)
+        await axios.patch(`/updateAlvaible/${room.id}`)
+        getDataRoom()
+        toast({
+            title: 'Success',
+            description: `${room.name} is Alvaible`,
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+        })
+    }
+
+    const handleDisableRoom = async (room) => {
+        await axios.patch(`/updateDisable/${room.id}`)
+        getDataRoom()
+        toast({
+            title: 'Success',
+            description: `${room.name} is Disable`,
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+        })
+    }
+
     return (
         <Box>
             <Box p={6}>
@@ -334,6 +360,25 @@ const ComponentDashboardTwo = () => {
                                         cursor="pointer"
                                         onClick={() => handleOpenDrawer(room)}
                                     />
+                                    {room.availability? (
+                                        <Icon
+                                        as={TbHome}
+                                        alt="Card image"
+                                        boxSize="30px"
+                                        objectFit="cover"
+                                        cursor="pointer"
+                                        onClick={() => handleDisableRoom(room)}
+                                    />
+                                    ) : (
+                                        <Icon
+                                        as={TbHomeOff}
+                                        alt="Card image"
+                                        boxSize="30px"
+                                        objectFit="cover"
+                                        cursor="pointer"
+                                        onClick={() => handleAlvaibleRoom(room)}
+                                        />
+                                    )}
                                     <Drawer
                                         isOpen={isOpenDrawer}
                                         placement='bottom'
