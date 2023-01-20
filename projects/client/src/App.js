@@ -23,6 +23,7 @@ import './Styles/swall.css';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import Category from './Components/Category';
+import BookingDetail from './Pages/Booking/BookingDetail';
 
 const router = createBrowserRouter([
   {
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
               <Footer key={3} />,
               <AlertSuccess key={4}/>
             ],
+          },
+          {
+            path: '/book/:propertyId/:index/:roomId',
+            element: <BookingDetail />,
           },
           {
             element: <RequireAuth />,
