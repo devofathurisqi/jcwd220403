@@ -16,7 +16,7 @@ import { Link, useLocation } from 'react-router-dom';
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure();
   const location = useLocation();
-  const ValidateComponent = location.pathname === '/add-property';
+  const ValidateComponent = location.pathname === '/tenant/test';
   const Navbar = () => {
     return (
       <Box>
@@ -86,5 +86,7 @@ export default function WithSubnavigation() {
       </Box>
     );
   };
-  return <Box>{ValidateComponent ? null : <Navbar />}</Box>;
+  return <Box>
+    {ValidateComponent ? null : <Navbar />}
+  </Box>;
 }

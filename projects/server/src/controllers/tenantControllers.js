@@ -98,7 +98,7 @@ module.exports = {
     },
     createRoomData: async (req, res) => {
         try {
-            const { name, description, price, propertyId } = req.body
+            const { name, description, price } = req.body
             const allowedTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/webp']
 
             if (!name) throw "Name is required"
@@ -118,12 +118,18 @@ module.exports = {
                 return res.status(401).send("File size exceeds the allowed limit of 5MB.")
             }
 
+            const propertyId = await database.property.findOne({
+                where : {
+                    name : req.query.name
+                },
+                raw:true
+            })
             await database.room.create({
                 name: name,
                 description: description,
                 price: price,
                 picture: req.file.filename,
-                propertyId: propertyId
+                propertyId: propertyId.id
             })
             res.status(200).send("Room created")
         } catch (err) {
@@ -132,7 +138,7 @@ module.exports = {
         }
     },
     createRoomOnBetenant: async (req, res) => {
-        try{
+        try {
             const { name, description, price } = req.body
             const allowedTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/webp']
             let propertyId;
@@ -149,18 +155,18 @@ module.exports = {
                 return res.status(401).send("Invalid file type. Only JPG, JPEG, WEBP and PNG are allowed.")
             }
 
-            if (req.file.size > 5000000) { 
+            if (req.file.size > 5000000) {
                 return res.status(401).send("File size exceeds the allowed limit of 5MB.")
             }
 
             const getPropertyId = await database.property.findOne({
-                where : {
-                    tenantId : req.params.tenantId
+                where: {
+                    tenantId: req.params.tenantId
                 },
                 order: [['id', 'DESC']]
             })
 
-            if(getPropertyId.length > 1){
+            if (getPropertyId.length > 1) {
                 propertyId = getPropertyId[0].id + 1
             } else {
                 propertyId = getPropertyId.id
@@ -174,7 +180,7 @@ module.exports = {
                 propertyId: propertyId
             })
             res.status(201).send("room created!")
-        }catch(err){
+        } catch (err) {
             console.log(err)
             res.status(404).send(err)
         }
@@ -436,11 +442,11 @@ module.exports = {
     deleteDataRooms: async (req, res) => {
         try {
             await database.image.destroy({
-                where : {
-                    roomId : req.params.id
+                where: {
+                    roomId: req.params.id
                 }
             })
-             await database.room.destroy({
+            await database.room.destroy({
                 where: {
                     id: req.params.id
                 }
@@ -552,8 +558,10 @@ module.exports = {
     getAllDataRooms: async (req, res) => {
         try {
             const getPropertyAndRooms = await database.property.findAll({
+                attributes: ["name", "id"],
                 where: {
-                    tenantId: req.params.tenantId
+                    tenantId: req.params.tenantId,
+                    name : req.query.name
                 }, include: [
                     {
                         model: database.room,
@@ -581,6 +589,66 @@ module.exports = {
                 group: ['city', 'province']
             });
             res.status(200).send(category)
+        } catch (err) {
+            console.log(err)
+            res.status(404).send(err)
+        }
+    },
+    getDescProperty: async (req, res) => {
+        try {
+            const response = await database.property.findOne({
+                attributes: ["description"],
+                where: {
+                    id: req.params.id
+                }
+            })
+            res.status(201).send(response)
+        } catch (err) {
+            console.log(err)
+            res.status(404).send(err)
+        }
+    },
+    getFacilityById: async (req, res) => {
+        try {
+            const response = await database.property.findOne({
+                attributes: ["name"],
+                include: [{
+                    model: database.facility,
+                    attributes: ["name"]
+                }],
+                where: {
+                    id: req.params.id
+                }
+            });
+            res.status(201).send(response);
+        } catch (err) {
+            console.log(err);
+            res.status(404).send(err);
+        }
+    },
+    getPropertyNamesByTenantId: async (req, res) => {
+        try{
+            const response = await database.property.findAll({
+                attributes: ["name"],
+                where : {
+                    tenantId: req.params.tenantId
+                }
+            })
+            res.status(200).send(response)
+        }catch(err){
+            console.log(err)
+            res.status(404).send(err)
+        }
+    },
+    getDescRoom: async (req, res) => {
+        try {
+            const response = await database.room.findOne({
+                attributes: ["description"],
+                where: {
+                    id: req.params.id
+                }
+            })
+            res.status(201).send(response)
         } catch (err) {
             console.log(err)
             res.status(404).send(err)

@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
     value: {
-        name: ""
+        name: "",
+        index : null
     }
 }
 
@@ -12,9 +13,12 @@ const propertySlice = createSlice({
     reducers: {
         getName: (state, action) => {
             state.value.name = action.payload
+        },
+        getIndex: (state, action) => {
+            state.value.index = action.payload
         }
     }
 })
 
-export const { getName } = propertySlice.actions
+export const { getName, getIndex } = propertySlice.actions
 export default propertySlice.reducer

@@ -24,6 +24,10 @@ router.get('/api/roomimages/:id', tenantControllers.getDataRoomAndImagesRoom);
 router.get('/api/getAllDataRooms/:tenantId', tenantControllers.getAllDataRooms)
 router.get('/api/getmorePictureProperty/:tenantId', tenantControllers.getDataPropertyAndImagesProperty)
 router.get('/api/category', tenantControllers.getAllCategory)
+router.get('/api/descProperty/:id', tenantControllers.getDescProperty)
+router.get('/api/descRoom/:id', tenantControllers.getDescRoom)
+router.get('/api/getFacilityById/:id', tenantControllers.getFacilityById)
+router.get('/api/getNamesProperty/:tenantId', tenantControllers.getPropertyNamesByTenantId)
 
 //update
 router.patch('/api/editpicture/:id', multerUpload.single('file'), tenantControllers.updatePictureProperty);

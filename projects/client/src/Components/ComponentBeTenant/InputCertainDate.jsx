@@ -27,7 +27,7 @@ import { CgArrowLongDownR } from "react-icons/cg"
 import { MdOutlineAutoDelete } from "react-icons/md"
 import Axios from "axios"
 
-const InputDisableCertainDate = () => {
+const InputCertainDate = () => {
     const isOpenModalCertainDate = useSelector((state) => state.CertainDate.isOpen)
     let room = useSelector((state) => state.CertainDate.room)
     const disableData = room && room.unavailableDates
@@ -139,7 +139,6 @@ const InputDisableCertainDate = () => {
                         </AlertDialogBody>
                     </AlertDialogContent>
                 </AlertDialog>
-
             </>
         )
     }
@@ -516,4 +515,4 @@ const InputDisableCertainDate = () => {
     )
 }
 
-export default InputDisableCertainDate
+export default InputCertainDate

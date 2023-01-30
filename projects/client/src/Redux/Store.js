@@ -4,6 +4,7 @@ import DeleteProperty from "./DeleteProperty"
 import DoneCreatePropertiesSlice from "./DoneCreatePropertiesSlice"
 import MorePictureProperty from "./MorePictureProperty"
 import CertainDate from "./CertainDate"
+import PropertySlice from "./PropertySlice"
 
 
 export default configureStore({
@@ -13,5 +14,6 @@ export default configureStore({
         DoneCreatePropertiesSlice,
         MorePictureProperty,
         CertainDate,
+        PropertySlice
     }
 })

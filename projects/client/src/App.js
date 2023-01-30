@@ -25,6 +25,8 @@ import Category from './Components/Category';
 import BookingDetail from './Pages/Booking/BookingDetail';
 import PaymentPage from './Pages/Payment/PaymentPage';
 
+
+import DashboardTenant from './Pages/Tenant/DashboardTenant';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -124,6 +126,10 @@ const router = createBrowserRouter([
                     path: 'add-property',
                     element: <BeTenant />,
                   },
+                  {
+                    path: "test",
+                    element: <DashboardTenant/>
+                  }
                 ],
               },
             ],

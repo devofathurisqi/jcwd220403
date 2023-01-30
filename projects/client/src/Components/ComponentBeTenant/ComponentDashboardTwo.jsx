@@ -31,7 +31,7 @@ import { Carousel } from 'react-responsive-carousel';
 import useAuth from '../../hooks/useAuth'
 import { openModalCertainDate } from '../../Redux/CertainDate'
 import { useDispatch } from "react-redux"
-import InputDisableCertainDate from './InputDisableCertainDate'
+import InputDisableCertainDate from './InputCertainDate'
 // import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 
 
@@ -583,12 +583,12 @@ const ComponentDashboardTwo = () => {
                                                                     return null
                                                                 }
                                                             })}
-                                                            {room.highSeasons && room.highSeasons.filter(item => new Date(item.start_date) 
-                                                            <= new Date() && new Date(item.end_date) > new Date()).length === 0 && (
-                                                                <Text mt={2} fontSize="lg" fontWeight="bold" color="teal.500">
-                                                            Rp.{room.price}
-                                                        </Text>
-                                                            )}
+                                                            {room.highSeasons && room.highSeasons.filter(item => new Date(item.start_date)
+                                                                <= new Date() && new Date(item.end_date) > new Date()).length === 0 && (
+                                                                    <Text mt={2} fontSize="lg" fontWeight="bold" color="teal.500">
+                                                                        Rp.{room.price}
+                                                                    </Text>
+                                                                )}
                                                         </Box>
                                                     </Box>
                                                 </Flex>
