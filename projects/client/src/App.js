@@ -120,16 +120,12 @@ const router = createBrowserRouter([
                 children: [
                   {
                     path: 'dashboard',
-                    element: <Dashboard />,
+                    element: <DashboardTenant />,
                   },
                   {
                     path: 'add-property',
                     element: <BeTenant />,
                   },
-                  {
-                    path: "test",
-                    element: <DashboardTenant/>
-                  }
                 ],
               },
             ],

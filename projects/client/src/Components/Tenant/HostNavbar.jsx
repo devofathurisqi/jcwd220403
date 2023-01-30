@@ -16,7 +16,7 @@ import { Link, useLocation } from 'react-router-dom';
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure();
   const location = useLocation();
-  const ValidateComponent = location.pathname === '/tenant/test';
+  const ValidateComponent = location.pathname === '/tenant/dashboard';
   const Navbar = () => {
     return (
       <Box>
