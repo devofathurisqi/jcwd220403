@@ -84,7 +84,7 @@ const Property = () => {
                         <Flex p={2} justifyContent="center" alignItems="center" cursor="pointer">
                             <Flex alignItems="center" gap="5px" textAlign="center">
                                 <Text color="#999999" fontFamily="sans-serif">More</Text>
-                                <Text color="#575758" fontWeight="bold" fontSize="sans-serif">Property</Text>
+                                <Text color="#999999" fontFamily="sans-serif">Property</Text>
                                 <Icon as={RiDashboardFill} color="#176dc8" boxSize="25px" />
                             </Flex>
                         </Flex>

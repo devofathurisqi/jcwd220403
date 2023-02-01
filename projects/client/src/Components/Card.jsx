@@ -110,7 +110,7 @@ function HomeCard() {
                           {item.category.city}
                         </Text>
                         <Text mt='2' fontWeight='bold' fontSize='sm'>
-                          {item.rooms[0].price}
+                          {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.rooms[0].price)}
                         </Text>
                       </Box>
                     </Box>

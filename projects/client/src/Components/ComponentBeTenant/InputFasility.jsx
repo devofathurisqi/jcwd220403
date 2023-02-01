@@ -10,6 +10,7 @@ import {
   useBreakpointValue,
   Button,
   Spinner,
+  Icon
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { DataFasility } from '../../Data/DataFasility';
@@ -158,7 +159,7 @@ const InputFasility = () => {
                 >
                   <CardBody>
                     <Box>
-                      <Heading size='md'>{item.img}</Heading>
+                      <Icon as={item.img} boxSize="25px"/>
                       <Text pt='2' fontSize='md'>
                         {item.title}
                       </Text>

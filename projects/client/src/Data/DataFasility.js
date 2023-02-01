@@ -10,77 +10,77 @@ import {RiNetflixFill} from "react-icons/ri"
 export const DataFasility = [
     {
         id: 1,
-        img: <FaSwimmingPool />,
+        img: FaSwimmingPool ,
         title: "Swimming Pool",
     },
     {
         id: 2,
-        img: <TbToolsKitchen />,
+        img: TbToolsKitchen,
         title: "Kitchen",
     },
     {
         id: 3,
-        img: <AiOutlineWifi />,
+        img: AiOutlineWifi,
         title: "Wifi",
     },
     {
         id: 4,
-        img: <FaWater />,
+        img: FaWater,
         title: "Sea view",
     },
     {
         id: 5,
-        img: <BsFlower1 />,
+        img: BsFlower1,
         title: "Garden view",
     },
     {
         id: 6,
-        img: <MdOutlineYard />,
+        img: MdOutlineYard,
         title: "Backyard",
     },
     {
         id: 7,
-        img: <GiHairStrands />,
+        img: GiHairStrands,
         title: "Hair dryer",
     },
     {
         id: 8,
-        img: <AiOutlineCar />,
+        img: AiOutlineCar,
         title: "Parking area",
     },
     {
         id: 9,
-        img: <BsWind />,
+        img: BsWind,
         title: "AC",
     },
     {
         id: 10,
-        img: <MdBalcony />,
+        img: MdBalcony ,
         title: "Private balcony",
     },
     {
         id: 11,
-        img: <CgSmartHomeRefrigerator />,
+        img: CgSmartHomeRefrigerator,
         title: "Refrigerator",
     },
     {
         id: 12,
-        img: <MdOutlineScreenSearchDesktop />,
+        img: MdOutlineScreenSearchDesktop,
         title: "TV",
     },
     {
         id: 13,
-        img: <GiCctvCamera />,
+        img: GiCctvCamera,
         title: "CCTV",
     },
     {
         id: 14,
-        img: <MdWorkOutline/>,
-        title: "Special work area",
+        img: MdWorkOutline,
+        title: "Work area",
     },
     {
         id: 15,
-        img: <RiNetflixFill />,
+        img: RiNetflixFill,
         title: "Netflix",
     },
 ]

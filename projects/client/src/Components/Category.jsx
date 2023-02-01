@@ -7,149 +7,141 @@ import {
   Center,
   useMediaQuery,
   useBreakpointValue,
+  Icon,
+  Flex
 } from '@chakra-ui/react';
 import { CategorySliders } from '../Data/CategorySliders';
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa"
 import { SettingsIcon } from '@chakra-ui/icons';
+// import "~slick-carousel/slick/slick.css"; 
+import { DataFasility } from "../Data/DataFasility"
+// import "~slick-carousel/slick/slick-theme.css";
+
 import { AnimatePresence, motion } from 'framer-motion';
+import Slider from "react-slick";
 
 //untuk swipe di mobile
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
+import { BsFilterRight } from "react-icons/bs"
 
 const Category = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(-1);
+  console.log(currentIndex)
   const [isMobile] = useMediaQuery('(max-width: 481px)');
   const [isTablet] = useMediaQuery('(max-width: 868px) and (min-width: 481px)');
   const numCards = isTablet ? 6 : 10;
 
-  const widht = useBreakpointValue({
-    base: 'auto',
-    md: '35px',
-  });
-  const display = useBreakpointValue({
-    base: 'none',
-    md: 'block',
-  });
-  const MarginRight = useBreakpointValue({
+  const NextArrow = (props) => {
+    const { onClick } = props;
+    return (
+      <Button
+        bg="white"
+        onClick={onClick}
+        sx={{
+          position: "absolute",
+          right: "-20px",
+          top: "calc(50% - 20px)",
+          color: "black",
+          borderRadius: "50%",
+          width: "40px",
+          height: "40px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <FaArrowRight />
+      </Button>
+    );
+  };
+
+  const PrevArrow = (props) => {
+    const { onClick } = props;
+    return (
+      <Button
+        bg="white"
+        onClick={onClick}
+        sx={{
+          position: "absolute",
+          left: "-20px",
+          top: "calc(50% - 20px)",
+          color: "black",
+          borderRadius: "50%",
+          width: "40px",
+          height: "40px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <FaArrowLeft />
+      </Button>
+    );
+  };
+
+  const slidesToShowResponsive = useBreakpointValue({
     base: 4,
-    md: 4,
-    lg: 7,
-  });
+    md: 7,
+    lg: 10
+  })
+  const slidesToScrollResponsinve = useBreakpointValue({
+    base: 4,
+    md: 3,
+    lg: 3
+  })
 
-  const handleNext = () => {
-    if (currentIndex < CategorySliders.length - numCards) {
-      setCurrentIndex(currentIndex + 1);
-    }
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: slidesToShowResponsive,
+    slidesToScroll: slidesToScrollResponsinve,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
   };
 
-  const handlePrev = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
+  const sizeFont = useBreakpointValue({
+    base: "8px",
+    md: "10px",
+    lg: "12px"
+  })
+  const iconSize = useBreakpointValue({
+    base: "25px",
+    md: "20px",
+    lg: "25px"
+  })
+
+  const displayButtonFilter = useBreakpointValue({
+    base: "none",
+    md:"block",
+    lg:"block"
+  })
 
   return (
     <Center>
-      {isMobile ? (
-        <Swiper slidesPerView='5'>
-          {CategorySliders.map((item, i) => (
-            <SwiperSlide key={i}>
-              <Box
-                cursor='pointer'
-                _hover={{ fontWeight: 'bold' }}
-                margin='15'
-                marginRight={MarginRight}
+      <Flex justifyContent="center" alignItems="center" width="90%">
+        <Box p={6} width="90%">
+          <Slider {...settings}>
+            {DataFasility.map((item, index) => (
+              <Box key={item.id} cursor="pointer" color={index === currentIndex ? "black" : "#717171"} _hover={{ color: "black" }} onClick={() => setCurrentIndex(index)}
+                borderBottom={index === currentIndex ? "2px solid black" : null} width="40px"
+
               >
-                <Center>
-                  <Image src={item.img} width={widht} height='35px' />
-                </Center>
-                <Center>
-                  <Text fontFamily='Poppins' color='black' boxShadow='md'>
-                    {item.title}
-                  </Text>
-                </Center>
+                <Flex flexDirection="column" justifyContent="center" alignItems="center">
+                  <Icon as={item.img} boxSize={iconSize} />
+                  <Text fontSize={sizeFont} fontWeight="bold" fontFamily="sans-serif">{item.title}</Text>
+                </Flex>
               </Box>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      ) : (
-        <Box
-          display='Flex'
-          marginTop={isMobile ? '1px' : '15px'}
-          justifyContent='center'
-          alignItems='center'
-        >
-          <Button
-            onClick={handlePrev}
-            borderRadius='35px'
-            variant='outline'
-            display={display}
-            marginRight='10px'
-            _hover={{ boxShadow: 'md' }}
-            color='black'
-            boxShadow='md'
-          >
-            {'<'}
-          </Button>
-          <AnimatePresence>
-            {CategorySliders.slice(currentIndex, currentIndex + numCards).map(
-              (item, i) => (
-                <motion.div
-                  key={i}
-                  layout
-                  initial={{ transform: 'scale(3)' }}
-                  animate={{ transform: 'scale(1)' }}
-                  exit={{ transform: 'scale(3)' }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Box
-                    cursor='pointer'
-                    _hover={{ fontWeight: 'bold' }}
-                    margin='15'
-                    marginRight={MarginRight}
-                    width='50px'
-                  >
-                    <Center>
-                      <Image src={item.img} width={widht} height='35px' />
-                    </Center>
-                    <Center>
-                      <Text fontFamily='Poppins' color='black' boxShadow='md'>
-                        {item.title}
-                      </Text>
-                    </Center>
-                  </Box>
-                </motion.div>
-              )
-            )}
-          </AnimatePresence>
-          <Button
-            onClick={handleNext}
-            borderRadius='35px'
-            variant='outline'
-            display={display}
-            _hover={{ boxShadow: 'md' }}
-            boxShadow='md'
-            color='black'
-          >
-            {'>'}
-          </Button>
-          <Button
-            variant='outline'
-            marginLeft='3%'
-            height='50px'
-            display={display}
-            borderRadius='14px'
-            color='black'
-            boxShadow='md'
-          >
-            <Center>
-              <SettingsIcon marginRight='5px' />
-              Filter
-            </Center>
-          </Button>
+            ))}
+          </Slider>
         </Box>
-      )}
+        <Box width="10%" display={displayButtonFilter}>
+          <Button backgroundColor="white" border="1px solid #717171" leftIcon={<BsFilterRight/>} width="75px">Filter</Button>
+        </Box>
+      </Flex>
     </Center>
+
   );
 };
 export default Category;

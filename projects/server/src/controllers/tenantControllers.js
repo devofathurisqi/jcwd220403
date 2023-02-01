@@ -64,9 +64,9 @@ module.exports = {
             if (!province) throw "Province is required"
             if (!city) throw "City is required"
 
-            if (!/^[A-Z][a-zA-Z\s]*$/.test(country)) throw "Country must start with an uppercase letter"
-            if (!/^[A-Z][a-zA-Z\s]*$/.test(province)) throw "Province must start with an uppercase letter"
-            if (!/^[A-Z][a-zA-Z\s]*$/.test(city)) throw "City must start with an uppercase letter"
+            // if (!/^[A-Z][a-zA-Z\s]*$/.test(country)) throw "Country must start with an uppercase letter"
+            // if (!/^[A-Z][a-zA-Z\s]*$/.test(province)) throw "Province must start with an uppercase letter"
+            // if (!/^[A-Z][a-zA-Z\s]*$/.test(city)) throw "City must start with an uppercase letter"
 
 
             //everything for location detail

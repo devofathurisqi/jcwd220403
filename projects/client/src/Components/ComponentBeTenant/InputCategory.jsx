@@ -11,6 +11,12 @@ import {
   Button,
   Spinner,
   useBreakpointValue,
+  List,
+  ListItem,
+  Stack,
+  InputGroup,
+  InputLeftElement,
+  Icon
 } from '@chakra-ui/react';
 // import axios from 'axios';
 import axios from '../../api/axios';
@@ -19,14 +25,18 @@ import { submitClickedToFalse } from '../../Redux/ButtonSlice';
 import { BsCheckLg } from 'react-icons/bs';
 import { motion } from 'framer-motion';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { AiOutlineSearch } from "react-icons/ai"
+import Axios from "axios"
 
 const InputCategory = () => {
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
-  const [dataCountry, setDataCountry] = useState([]);
+  const [dataProvince, setDataProvince] = useState([]);
+  const [dataCity, setDataCity] = useState([])
+  const [selectedProvince, setSelectedProvince] = useState(null)
 
   //localstate untuk formdata
-  const [country, setCountry] = useState('');
+  const [country, setCountry] = useState('Indonesia');
   const [province, setProvince] = useState('');
   const [city, setCity] = useState('');
   const [msg, setMsg] = useState('');
@@ -35,8 +45,8 @@ const InputCategory = () => {
   const [checklis, setChecklist] = useState(false);
 
   //validasi category
-  const isErrorCountry = country === '';
-  const isErrorProvince = province === '';
+  const isErrorCountry = country === ''
+  const isErrorProvince = province === ''
   const isErrorCity = city === '';
 
   const width = useBreakpointValue({
@@ -45,19 +55,41 @@ const InputCategory = () => {
     lg: '500px',
   });
 
-  const getDataCountry = async () => {
+  const getDataProvince = async () => {
     try {
-      const response = await axiosPrivate.get(
-        'https://restcountries.com/v2/all'
-      );
-      setDataCountry(response.data.map((country) => country.name));
+      const response = await Axios.get("https://dev.farizdotid.com/api/daerahindonesia/provinsi")
+      setDataProvince(response.data.provinsi)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
+
+  const getDataCity = async () => {
+    try {
+      const response = await Axios.get(`https://dev.farizdotid.com/api/daerahindonesia/kota?id_provinsi=${selectedProvince}`)
+      setDataCity(response.data.kota_kabupaten)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const convertNameProvince = () => {
+    const result = dataProvince.find(item => item.nama === province)
+    setSelectedProvince(result ? result.id : null)
+  }
 
   useEffect(() => {
-    getDataCountry();
+    getDataCity()
+  }, [selectedProvince])
+
+  useEffect(() => {
+    convertNameProvince()
+  }, [province])
+
+
+
+  useEffect(() => {
+    getDataProvince();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -123,19 +155,12 @@ const InputCategory = () => {
                 marginTop='20px'
               >
                 <FormLabel>Country</FormLabel>
-                <Select
-                  placeholder='Select Country'
-                  width='auto'
+                <Input
                   variant='flushed'
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                >
-                  {dataCountry.map((country) => (
-                    <option key={country} value={country}>
-                      {country}
-                    </option>
-                  ))}
-                </Select>
+                  type="text"
+                  value="Indonesia"
+                />
+
                 {isErrorCountry ? (
                   <FormHelperText color='red'>
                     Country is required
@@ -148,12 +173,17 @@ const InputCategory = () => {
               </FormControl>
               <FormControl isInvalid={isErrorProvince} width='auto'>
                 <FormLabel>Province</FormLabel>
-                <Input
+                <Select
                   variant='flushed'
+                  type="text"
                   placeholder='Province?'
                   value={province}
                   onChange={(e) => setProvince(e.target.value)}
-                />
+                >
+                  {dataProvince.map((item, index) => (
+                    <option key={index} value={item.nama}>{item.nama}</option>
+                  ))}
+                </Select>
                 {isErrorProvince ? (
                   <FormHelperText color='red'>
                     Province is required
@@ -166,12 +196,17 @@ const InputCategory = () => {
               </FormControl>
               <FormControl isInvalid={isErrorCity} width='auto'>
                 <FormLabel>City</FormLabel>
-                <Input
-                  variant='flushed'
-                  placeholder='City?'
+                <Select
+                  placeholder='Pilih Opsi'
+                  width="auto"
+                  variant="flushed"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                />
+                >
+                  {dataCity.map((item, index) => (
+                    <option key={index}>{item.nama}</option>
+                  ))}
+                </Select>
                 {isErrorCity ? (
                   <FormHelperText color='red'>City is required</FormHelperText>
                 ) : (

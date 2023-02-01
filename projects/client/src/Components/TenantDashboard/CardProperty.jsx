@@ -362,7 +362,7 @@ const CardProperty = () => {
         <Box marginTop="10px">
             <Flex gap="10px" justifyContent="center" alignItems="center" flexWrap="wrap">
                 {data && data.map((item, index) => (
-                    <Box width="340px" height="450px" border="4px solid #f1f1f1" borderRadius="15px">
+                    <Box width="320px" height="450px" border="4px solid #f1f1f1" borderRadius="15px">
                         <Box position="relative" margin="0" p={1} height="70%">
                             <Skeleton isLoaded={!loadingData}>
                                 <Box>
@@ -440,7 +440,9 @@ const CardProperty = () => {
                                 </Modal>
                                 <Flex gap="5px" alignItems="center" color="#9a9a9a">
                                     <Skeleton isLoaded={!loadingData}>
+                                        <Text fontSize="14px">
                                         {item.category.country}, {item.category.province}, {item.category.city}
+                                        </Text>
                                     </Skeleton>
                                     <SkeletonCircle isLoaded={!loadingData}>
                                         <Icon as={FiEdit3} cursor="pointer" boxSize="15px" color="#4e90d3" onClick={() => handleModalOpenLocation(item)} />
@@ -602,7 +604,7 @@ const CardProperty = () => {
                                                                     _hover={{ border: '2px solid black' }}>
                                                                     <CardBody>
                                                                         <Box>
-                                                                            <Heading size="md">{item.img}</Heading>
+                                                                            <Icon as={item.img} boxSize="25px" />
                                                                             <Text pt='2' fontSize='md'>
                                                                                 {item.title}
                                                                             </Text>

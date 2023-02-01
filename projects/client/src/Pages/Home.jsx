@@ -10,7 +10,7 @@ const Home = () => {
       <SearchProvider>
         <NavBar />
         <Outlet />
-        <NavBot />
+        {/* <NavBot /> */}
       </SearchProvider>
     </div>
   );

@@ -50,6 +50,11 @@ module.exports = {
                         model: database.propertypicture,
                         attributes: [[Sequelize.col('name'),'picture']]
                     },
+                    { 
+                        model: database.facility,
+                        through: 'property_facility',
+                        as: 'facilities'
+                    },
                 ],
                 order: [
                     // ['id', 'ASC'],
