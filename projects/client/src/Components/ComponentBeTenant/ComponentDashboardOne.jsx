@@ -23,6 +23,7 @@ import useAuth from '../../hooks/useAuth';
 import { Carousel } from 'react-responsive-carousel';
 import DeleteProperty from './DeleteProperty';
 import { openModal } from '../../Redux/DeleteProperty';
+
 import axios from '../../api/axios';
 
 const DashboardOne = () => {

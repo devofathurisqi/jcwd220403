@@ -2,34 +2,39 @@ import React, { useState, useEffect } from 'react'
 import {
     Box, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody,
     Tooltip, ModalFooter, Spinner, Text, useToast, Input, Image, Flex, Icon, FormControl,
-    FormLabel, FormHelperText, Divider, Spacer, useDisclosure, AlertDialog, AlertDialogBody,
+    FormLabel, FormHelperText, Divider, AlertDialog, AlertDialogBody,
     AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, AlertDialogCloseButton,
-    Textarea, Card, CardBody, Heading, Center, Skeleton, SkeletonCircle, useBreakpointValue
+    Textarea, Card, CardBody, Center, Skeleton, SkeletonCircle, useBreakpointValue, Alert, AlertTitle, AlertIcon,
+    AlertDescription, Select, UnorderedList, ListItem
 } from "@chakra-ui/react"
 import useAuth from '../../hooks/useAuth'
 import axios from "../../api/axios"
-import { Carousel } from 'react-responsive-carousel';
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import InputMorePictureProperty from '../ComponentBeTenant/InputMorePictureProperty';
 import { openDrawerForMorePicture } from '../../Redux/MorePictureProperty';
+import { openModal } from '../../Redux/DeleteProperty'
+import DeleteProperty from '../ComponentBeTenant/DeleteProperty'
 import { FiEdit3 } from "react-icons/fi"
 import { RxDividerVertical } from "react-icons/rx"
 import { DataFasility } from "../../Data/DataFasility"
+import { AiOutlineFileImage } from "react-icons/ai"
 import Slider from "react-slick";
+import { FaArrowLeft, FaArrowRight, FaHotel } from "react-icons/fa"
+import { MdDeleteForever } from "react-icons/md"
+import Axios from "axios"
 
 const CardProperty = () => {
     //for everything
+    const dispatch = useDispatch()
     const [data, setData] = useState([])
+    console.log(data)
     const [load, setLoad] = useState(false)
     const [descProperty, setDescProperty] = useState()
-    console.log(descProperty)
     const [loadDesc, setLoadDesc] = useState(false)
     const [loadingData, setLoadingData] = useState(true)
     const { auth } = useAuth();
     const [editId, setEditId] = useState(null)
-    console.log(editId)
     const toast = useToast()
-    const cancelRef = React.useRef()
 
     //editname
     const [isopenModalName, setIsOpenModalName] = useState(false)
@@ -52,10 +57,13 @@ const CardProperty = () => {
 
     //edit location detail
     const [province, setProvince] = useState("")
-    const [country, setCountry] = useState("")
+    const [country, setCountry] = useState("Indonesia")
     const [city, setCity] = useState("")
     const [msgErrorLocation, setMsgErrorLocation] = useState("")
     const [modalOpenLocation, setModalOpenLocation] = useState(false)
+    const [dataProvince, setDataProvince] = useState([]);
+    const [dataCity, setDataCity] = useState([])
+    const [selectedProvince, setSelectedProvince] = useState(null)
 
     const isErrorCountry = country === ""
     const isErrorProvince = province === ""
@@ -69,12 +77,43 @@ const CardProperty = () => {
     const [loadFacility, setLoadFacility] = useState(false)
     const [msgNameFacility, setMsgNameFacility] = useState("")
 
-    const dispatch = useDispatch()
+    //caraousel 
+    const [caraouselIndexHover, setCaraouselIndexHover] = useState(-1)
+
+    //filteringData
+    const activeStatusAll = useSelector((state) => state.FilterProperty.value.statusAll)
+    const activeBestSeller = useSelector((state) => state.FilterProperty.value.bestSeller)
+    const activeNotSold = useSelector((state) => state.FilterProperty.value.notSold)
+    const sorting = useSelector((state) => state.FilterProperty.value.Sort)
+    
 
     const getData = async () => {
         try {
-            const response = await axios.get(`property/${auth.tenantId}`)
-            setData(response.data)
+            const response = await axios.get(`property/${auth.tenantId}`, {
+                params : {
+                    orderByUser : sorting
+                }
+            })
+            const properties = response.data
+            if (activeStatusAll === true) {
+                setData(properties)
+            } else if (activeBestSeller === true) {
+                properties.sort((a, b) => {
+                    let aTotal = 0
+                    let bTotal = 0
+                    a.rooms.forEach(room => {
+                        aTotal += room.transactions.length
+                    })
+                    b.rooms.forEach(room => {
+                        bTotal += room.transactions.length
+                    })
+                    return bTotal - aTotal
+                })
+                setData([properties[0]])
+            } else if (activeNotSold === true) {
+                setData(properties.filter(property => property.rooms.length > 0 &&
+                    property.rooms.every(room => room.transactions.length === 0)))
+            }
             setTimeout(() => {
                 setLoadingData(false)
             }, 3000)
@@ -283,6 +322,43 @@ const CardProperty = () => {
             }
         }
     }
+
+    const getDataProvince = async () => {
+        try {
+            const response = await Axios.get("https://dev.farizdotid.com/api/daerahindonesia/provinsi")
+            setDataProvince(response.data.provinsi)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const getDataCity = async () => {
+        try {
+            const response = await Axios.get(`https://dev.farizdotid.com/api/daerahindonesia/kota?id_provinsi=${selectedProvince}`)
+            setDataCity(response.data.kota_kabupaten)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const convertNameProvince = () => {
+        const result = dataProvince.find(item => item.nama === province)
+        setSelectedProvince(result ? result.id : null)
+    }
+
+    useEffect(() => {
+        getDataCity()
+    }, [selectedProvince])
+
+    useEffect(() => {
+        convertNameProvince()
+    }, [province])
+
+    useEffect(() => {
+        getDataProvince();
+    }, []);
+
+
     const handleModalOpenLocation = (item) => {
         setModalOpenLocation(true)
         setEditId(item.id)
@@ -359,38 +435,158 @@ const CardProperty = () => {
         md: "10px",
         lg: "12px"
     })
-    const settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1
-      };
+    const widthResponsive = useBreakpointValue({
+        base: "100%",
+        md: "100%",
+        lg: "50%"
+    })
+
+    const NextArrow = (props) => {
+        const { onClick } = props;
+        return (
+            <Button
+                onMouseEnter={() => setCaraouselIndexHover(caraouselIndexHover)}
+                onMouseOut={() => setCaraouselIndexHover(-1)}
+                bg="white"
+                onClick={onClick}
+                style={{
+                    position: "absolute",
+                    right: "5px",
+                    top: "calc(50% - 20px)",
+                    color: "black",
+                    borderRadius: "100%",
+                    width: "20px",
+                    display: caraouselIndexHover >= 0 ? "flex" : "none",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    zIndex: 1,
+                    opacity: 1
+                }}
+            >
+                <FaArrowRight />
+            </Button>
+        );
+    };
+
+    const PrevArrow = (props) => {
+        const { onClick } = props;
+        return (
+            <Button
+                bg="white"
+                onClick={onClick}
+                onMouseEnter={() => setCaraouselIndexHover(caraouselIndexHover)}
+                onMouseOut={() => setCaraouselIndexHover(-1)}
+                style={{
+                    position: "absolute",
+                    left: "5px",
+                    top: "calc(50% - 20px)",
+                    color: "black",
+                    borderRadius: "100%",
+                    width: "20px",
+                    display: caraouselIndexHover >= 0 ? "flex" : "none",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    zIndex: 1,
+                    opacity: 1
+                }}
+            >
+                <FaArrowLeft />
+            </Button>
+        );
+    };
+
+    const BestSeller = () => {
+        if (activeBestSeller === true) {
+            return (
+                <Box width={widthResponsive} p={4} boxShadow="md">
+                    {data && data.map((item, index) => (
+                        <Box>
+                            <Box>
+                                <Center>
+                                    <Icon as={FaHotel} boxSize="40px" mr={0} />
+                                </Center>
+                                <Text textAlign="center" fontWeight="bold">
+                                    Congratulations!
+                                </Text>
+                                <Text borderBottom="1px solid black" paddingBottom="5px" textAlign="center">
+                                    Selamat atas pencapaian property anda yang bernama {item.name}
+                                </Text>
+                                <Text marginTop="5px">
+                                    Berikut adalah detail transaksi property {item.name} :
+                                </Text>
+                                <UnorderedList>
+                                    {item.rooms.map((Roomtransactions, i) => (
+                                        <ListItem>Room {Roomtransactions.name} memiliki {Roomtransactions.transactions.length} Transaksi</ListItem>
+                                    ))}
+                                </UnorderedList>
+                            </Box>
+                        </Box>
+
+                    ))}
+                </Box>
+            )
+        }
+    }
+    const NotSold = () => {
+        if (activeNotSold === true) {
+            return (
+                <Center>
+                    <Box>
+                        {data.length === 0 ? (
+                            <Box width="100%" p={4} boxShadow="md">
+                                <Center>
+                                    <Icon as={FaHotel} boxSize="40px" mr={0} />
+                                </Center>
+                                <Text textAlign="center" fontWeight="bold">
+                                    Congratulations!
+                                </Text>
+                                <Text borderBottom="1px solid black" paddingBottom="5px" textAlign="center">
+                                    Tidak ada property yang tidak pernah ada transaksi
+                                </Text>
+                                <Text marginTop="5px" textAlign="center" fontFamily="sans-serif" fontWeight="bold">
+                                    Terus sukses bersama holistay!
+                                </Text>
+                            </Box>
+                        ) : null}
+                    </Box>
+                </Center>
+            )
+        }
+    }
 
     return (
-        <Box marginTop="10px">
+        <Box marginTop="10px" display={activeBestSeller ? "flex" : "block"} justifyContent="center" alignItems="center" gap="40px" flexWrap="wrap">
+            <BestSeller />
+            <NotSold />
             <Flex gap="10px" justifyContent="center" alignItems="center" flexWrap="wrap">
                 {data && data.map((item, index) => (
                     <Box width="320px" height="450px" border="4px solid #f1f1f1" borderRadius="15px">
                         <Box position="relative" margin="0" p={1} height="70%">
                             <Skeleton isLoaded={!loadingData}>
-                                <Box>
-                                    {/* <Carousel
-                                        autoPlay
-                                        infiniteLoop
-                                        showArrows={true}> */}
-                                        {/* <Slider {...settings}> */}
+                                <Box onMouseEnter={() => setCaraouselIndexHover(index)}
+                                    onMouseLeave={() => setCaraouselIndexHover(-1)}>
+                                    <Slider dots={true}
+                                        infinite={true}
+                                        speed={500}
+                                        slidesToShow={1}
+                                        slidesToScroll={1}
+                                        nextArrow={caraouselIndexHover === index ? <NextArrow /> : null}
+                                        prevArrow={caraouselIndexHover === index ? <PrevArrow /> : null}>
                                         {item.propertypictures && item.propertypictures.map((image, i) => (
-                                            <Box key={i}>
-                                                <Image cursor="pointer" height="150px" width="100%" objectFit="cover" borderRadius="5px" style={{ filter: index === indexHover ? "brightness(30%)" : "none" }} src={`http://localhost:2000/propertyPicture/${image.picture}`} />
+                                            <Box key={i}
+                                            >
+                                                <Image cursor="pointer" height="150px" width="100%" objectFit="cover" borderRadius="5px"
+                                                    style={{ filter: index === indexHover ? "brightness(30%)" : "none" }}
+                                                    src={`http://localhost:2000/propertyPicture/${image.picture}`}
+                                                />
                                             </Box>
                                         ))}
-                                        {/* </Slider> */}
-                                  
+
+                                    </Slider>
                                     <Tooltip label="Change Picture?" fontSize="md" placement="top" openDelay={300} color="black" bg="white">
                                         <Button onClick={() => isOpenModalPicture(item)} style={{
-                                            position: "absolute", top: "0", left: "0", right: "0", bottom: "0",
-                                            width: "100%", height: "40%", opacity: "0", cursor: "pointer",
+                                            position: "absolute", top: "0", left: "20%", right: "0", bottom: "0",
+                                            width: "60%", height: "50%", opacity: "0", cursor: "pointer",
                                             zIndex: 1,
                                         }} onMouseOver={() => setIndexHover(index)} onMouseOut={() => setIndexHover(-1)}>Open Modal</Button>
                                     </Tooltip>
@@ -410,7 +606,6 @@ const CardProperty = () => {
                                                     {load ? <Spinner /> : "Save"}
                                                 </Button>
                                                 <Button onClick={isCloseModalPicture}>Cancel</Button>
-                                                <Button colorScheme="blue" variant="outline" marginLeft="10px" onClick={() => dispatch(openDrawerForMorePicture())}>More Picture?</Button>
                                             </ModalFooter>
                                         </ModalContent>
                                     </Modal>
@@ -467,29 +662,57 @@ const CardProperty = () => {
                                         <ModalBody pb={6}>
                                             <form onSubmit={editLocationDetail}>
                                                 <Text fontSize="14px" textAlign="center" color="red">{msgErrorLocation}</Text>
-                                                <FormControl isInvalid={isErrorCountry} width="auto" marginLeft="10px" marginRight="10px" >
+                                                <FormControl isInvalid={isErrorCountry} width="auto" >
                                                     <FormLabel>Country</FormLabel>
-                                                    <Input variant="flushed" placeholder='Country?'
+                                                    <Input variant="flushed" placeholder='Country?' value="Indonesia"
                                                         onChange={(e) => setCountry(e.target.value)}
                                                     />
                                                     {isErrorCountry ? (<FormHelperText color="red">Country is required</FormHelperText>) :
                                                         (<FormHelperText color="#478fd3">Update country success</FormHelperText>)}
                                                 </FormControl>
-                                                <FormControl isInvalid={isErrorProvince} width="auto" marginLeft="10px" marginRight="10px" >
+                                                <FormControl isInvalid={isErrorProvince} width='auto'>
                                                     <FormLabel>Province</FormLabel>
-                                                    <Input variant="flushed" placeholder='Province?'
+                                                    <Select
+                                                        variant='flushed'
+                                                        type="text"
+                                                        placeholder='Province?'
+                                                        value={province}
                                                         onChange={(e) => setProvince(e.target.value)}
-                                                    />
-                                                    {isErrorProvince ? (<FormHelperText color="red">Province is required</FormHelperText>) :
-                                                        (<FormHelperText color="#478fd3">Update province success</FormHelperText>)}
+                                                    >
+                                                        {dataProvince.map((item, index) => (
+                                                            <option key={index} value={item.nama}>{item.nama}</option>
+                                                        ))}
+                                                    </Select>
+                                                    {isErrorProvince ? (
+                                                        <FormHelperText color='red'>
+                                                            Province is required
+                                                        </FormHelperText>
+                                                    ) : (
+                                                        <FormHelperText color='#478fd3'>
+                                                            Create province success
+                                                        </FormHelperText>
+                                                    )}
                                                 </FormControl>
-                                                <FormControl isInvalid={isErrorCity} width="auto" marginLeft="10px" marginRight="10px" >
+                                                <FormControl isInvalid={isErrorCity} width='auto'>
                                                     <FormLabel>City</FormLabel>
-                                                    <Input variant="flushed" placeholder='City?'
+                                                    <Select
+                                                        placeholder='Pilih Opsi'
+                                                        width="auto"
+                                                        variant="flushed"
+                                                        value={city}
                                                         onChange={(e) => setCity(e.target.value)}
-                                                    />
-                                                    {isErrorCity ? (<FormHelperText color="red">City is required</FormHelperText>) :
-                                                        (<FormHelperText color="#478fd3">Update city success</FormHelperText>)}
+                                                    >
+                                                        {dataCity.map((item, index) => (
+                                                            <option key={index}>{item.nama}</option>
+                                                        ))}
+                                                    </Select>
+                                                    {isErrorCity ? (
+                                                        <FormHelperText color='red'>City is required</FormHelperText>
+                                                    ) : (
+                                                        <FormHelperText color='#478fd3'>
+                                                            Create city success
+                                                        </FormHelperText>
+                                                    )}
                                                 </FormControl>
                                             </form>
                                         </ModalBody>
@@ -573,13 +796,16 @@ const CardProperty = () => {
                         <Box bg="#f7f7f7" width="100%" marginTop="21.5px" height="25%" borderBottomRadius="10px">
                             <Box p={2}>
                                 <Skeleton isLoaded={!loadingData}>
-                                    <Text textAlign="center" fontFamily="sans-serif" color="#787878" fontWeight="bold">Past 30 days</Text>
+                                    <Text textAlign="center" fontFamily="sans-serif" color="#787878" fontWeight="bold">Settings</Text>
                                 </Skeleton>
                                 <Flex marginTop="10px" alignItems="center" justifyContent="center">
-                                    <Flex flexDirection="column" alignItems="center">
+                                    <Flex flexDirection="column" alignItems="center" cursor="pointer" onClick={() => dispatch(openModal(item))}>
+                                        <DeleteProperty />
                                         <Skeleton isLoaded={!loadingData}>
-                                            <Text color="#aeaeae">Views</Text>
-                                            <Text color="#3b3a3e" textAlign="center">560</Text>
+                                            <Text color="#6a9dc7" fontWeight="bold">Delete</Text>
+                                            <Center>
+                                                <Icon as={MdDeleteForever} boxSize="25px" color="#3b3a3e" />
+                                            </Center>
                                         </Skeleton>
                                     </Flex>
                                     <Icon as={RxDividerVertical} boxSize="40px" color="#eaeaea" />
@@ -642,10 +868,12 @@ const CardProperty = () => {
                                         </AlertDialogContent>
                                     </AlertDialog>
                                     <Icon as={RxDividerVertical} boxSize="40px" color="#eaeaea" />
-                                    <Flex flexDirection="column" alignItems="center">
+                                    <Flex flexDirection="column" alignItems="center" justifyContent="center" cursor="pointer" onClick={() => dispatch(openDrawerForMorePicture(item.id))}>
                                         <Skeleton isLoaded={!loadingData}>
-                                            <Text color="#aeaeae">Desc</Text>
-                                            <Text color="#3b3a3e" textAlign="center">7</Text>
+                                            <Text color="#6a9dc7" fontWeight="bold">Picture</Text>
+                                            <Center>
+                                                <Icon as={AiOutlineFileImage} boxSize="25px" />
+                                            </Center>
                                         </Skeleton>
                                     </Flex>
                                 </Flex>

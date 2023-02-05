@@ -20,6 +20,7 @@ const useRefreshToken = () => {
         userId: response.data.userId,
         userPhoto: response.data.userPhoto,
         tenantId: response.data.tenantId,
+        createdAt : response.data.createdAt
       };
     });
     return response.data.accessToken;

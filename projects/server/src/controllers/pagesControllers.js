@@ -10,7 +10,7 @@ module.exports = {
                 include: [
                     { 
                         model: database.room,
-                        attributes: ['price', 'picture', 'availability', 'propertyId'],
+                        attributes: ['price', 'picture', 'propertyId'],
                         include: [
                             { 
                                 model: database.transaction,
@@ -67,7 +67,7 @@ module.exports = {
                         ],
                     },
                     { 
-                        attributes: ['city', 'province', 'country'],
+                        attributes: ['city', 'province', 'country', 'locationDetail'],
                         model: database.category,
                         where: { city: lokasi ? lokasi : {[Op.not]: null} },
                     }, 

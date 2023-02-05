@@ -26,11 +26,6 @@ module.exports = (sequelize, DataTypes) => {
       description: DataTypes.STRING,
       price: DataTypes.INTEGER,
       picture: DataTypes.STRING,
-      availability: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true,
-      },
     },
     {
       sequelize,

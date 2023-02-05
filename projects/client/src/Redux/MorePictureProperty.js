@@ -5,16 +5,19 @@ const morePictureProperty = createSlice({
     initialState: {
         isDrawerOpen: false,
         imageUrl : null,
-        picture : null
+        picture : null,
+        idProperty : null
     },
     reducers: {
-        openDrawerForMorePicture: (state) => {
+        openDrawerForMorePicture: (state, action) => {
             state.isDrawerOpen = true
+            state.idProperty = action.payload
         },
         closeDrawerForMorePicture: (state) => {
             state.isDrawerOpen = false
             state.picture = null;
             state.imageUrl = null;
+            state.idProperty = null
         },
         setPicture: (state, action) => {
             state.picture = action.payload.picture;

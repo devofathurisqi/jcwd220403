@@ -15,14 +15,14 @@ router.post('/api/properties', multerUpload.single('file'), tenantControllers.Cr
 router.post('/api/room', roomUpload.single('file'), tenantControllers.createRoomData);
 router.post('/api/roomOnBeTenant/:tenantId', roomUpload.single('file'), tenantControllers.createRoomOnBetenant);
 router.post('/api/addmanyimageroom', roomUpload.single('file'), tenantControllers.createManyImageinRoom);
-router.post('/api/createMorePictureProperty/:tenantId', multerUpload.single('file'), tenantControllers.createMorePictureProperty)
+router.post('/api/createMorePictureProperty/:id', multerUpload.single('file'), tenantControllers.createMorePictureProperty)
 
 //get data
 router.get('/api/property/:tenantId', tenantControllers.getAllDataProperty);
 router.get('/api/roombyid/:id', tenantControllers.getRoomPropertyById);
 router.get('/api/roomimages/:id', tenantControllers.getDataRoomAndImagesRoom);
 router.get('/api/getAllDataRooms/:tenantId', tenantControllers.getAllDataRooms)
-router.get('/api/getmorePictureProperty/:tenantId', tenantControllers.getDataPropertyAndImagesProperty)
+router.get('/api/getmorePictureProperty/:id', tenantControllers.getDataPropertyAndImagesProperty)
 router.get('/api/category', tenantControllers.getAllCategory)
 router.get('/api/descProperty/:id', tenantControllers.getDescProperty)
 router.get('/api/descRoom/:id', tenantControllers.getDescRoom)

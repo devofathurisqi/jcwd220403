@@ -7,7 +7,8 @@ import {
     AlertDialogContent, AlertDialogOverlay, AlertDialogCloseButton, AlertDialogHeader,
     Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader,
     DrawerBody, Stack, Heading, Card, CardBody, CardFooter, DrawerFooter,
-    Skeleton, SkeletonCircle
+    Skeleton, SkeletonCircle, Alert, AlertIcon, AlertTitle, AlertDescription,
+    useDisclosure, CloseButton
 
 } from "@chakra-ui/react"
 import axios from "../../api/axios"
@@ -23,6 +24,9 @@ import { GiPriceTag } from "react-icons/gi"
 import { TfiStatsUp } from "react-icons/tfi"
 import { openModalCertainDate } from '../../Redux/CertainDate'
 import InputCertainDate from '../ComponentBeTenant/InputCertainDate'
+import Slider from 'react-slick'
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa"
+import { getStatusAllLength, getStatusActiveLength, getStatusOffMarketLength } from '../../Redux/PropertySlice'
 
 const RoomCard = () => {
     //everything
@@ -30,12 +34,19 @@ const RoomCard = () => {
     const dispatch = useDispatch()
     const nameProperty = useSelector((state) => state.PropertySlice.value.name)
     const [data, setData] = useState([])
+    const [indexImages, setIndexImages] = useState(-1)
+    const [currentIndexImages, setCurrentIndexImages] = useState(-1)
     const [roomImages, setRoomImages] = useState([])
     const [roomId, setRoomId] = useState(null)
     const [loadingData, setLoadingData] = useState(true)
     const [load, setLoad] = useState(false)
     const [editId, setEditId] = useState()
     const toast = useToast()
+
+    //for filtering data
+    const statusALl = useSelector((state) => state.PropertySlice.value.statusAll)
+    const active = useSelector((state) => state.PropertySlice.value.active)
+    const offMarket = useSelector((state) => state.PropertySlice.value.offMarket)
 
     //editRooms
     const [loadEdit, setLoadEdit] = useState(false)
@@ -59,6 +70,10 @@ const RoomCard = () => {
     const [isOpenDrawer, setIsOpenDrawer] = useState(false)
     const [msgAddPicture, setMsgAddPicture] = useState("")
 
+    //deleteRooms
+    const [msgDelete, setMsgDelete] = useState("")
+    const [isVisible, setIsVisible] = useState(false);
+
 
     const getData = async () => {
         try {
@@ -74,7 +89,36 @@ const RoomCard = () => {
                     }
                 })
             })
-            setData(response.data[0].rooms)
+
+            dispatch(getStatusAllLength(response.data[0].rooms.length))
+            dispatch(getStatusActiveLength(
+                response.data[0].rooms.filter(room =>
+                    room.unavailableDates.length === 0 ||
+                    room.unavailableDates.some(date =>
+                        new Date(date.start_date) >= new Date() && new Date(date.end_date) <= new Date()
+                    )
+                ).length
+            ))
+            dispatch(getStatusOffMarketLength(response.data[0].rooms.filter(room => room.unavailableDates.some(
+                date => new Date(date.start_date) <= new Date() && new Date(date.end_date) >= new Date()
+            )).length))
+
+            if (statusALl === true) {
+                setData(response.data[0].rooms)
+            } else if (active === true) {
+                setData(response.data[0].rooms.filter(room =>
+                    room.unavailableDates.length === 0 ||
+                    room.unavailableDates.some(date =>
+                        new Date(date.start_date) >= new Date() && new Date(date.end_date) <= new Date()
+                    )
+                ));
+            } else if (offMarket === true) {
+                setData(response.data[0].rooms.filter(room =>
+                    room.unavailableDates.some(date =>
+                        new Date(date.start_date) <= new Date() && new Date(date.end_date) >= new Date()
+                    )
+                ));
+            }
             setTimeout(() => {
                 setLoadingData(false)
             }, 3000)
@@ -98,7 +142,7 @@ const RoomCard = () => {
 
     useEffect(() => {
         getData()
-    }, [nameProperty])
+    }, [nameProperty, active, offMarket, statusALl])
 
     //editRooms
     const handlePictureChange = (e) => {
@@ -188,31 +232,6 @@ const RoomCard = () => {
         setEditId(null)
     }
 
-    //room alvailability
-    const handleAlvaibleRoom = async (item) => {
-        await axios.patch(`/updateAlvaible/${item.id}`)
-        getData()
-        toast({
-            title: 'Success',
-            description: `${item.name} is Alvaible`,
-            status: 'success',
-            duration: 3000,
-            isClosable: true,
-        })
-    }
-
-    const handleDisableRoom = async (item) => {
-        await axios.patch(`/updateDisable/${item.id}`)
-        getData()
-        toast({
-            title: 'Success',
-            description: `${item.name} is Disable`,
-            status: 'success',
-            duration: 3000,
-            isClosable: true,
-        })
-    }
-
     const handleCloseDrawer = () => {
         setIsOpenDrawer(false);
         setImageUrl(null);
@@ -281,6 +300,7 @@ const RoomCard = () => {
         try {
             await axios.delete(`/deleteroom/${item.id}`)
             getData()
+            setMsgDelete("")
             toast({
                 title: 'Success',
                 description: 'Data has been deleted',
@@ -290,27 +310,104 @@ const RoomCard = () => {
             })
         } catch (err) {
             console.log(err)
+            if (err.response) {
+                setMsgDelete(err.response.data)
+                setIsVisible(true)
+            }
+
         }
     }
+    function ShowAlertDelete() {
+        return isVisible ? (
+            <Alert status='error' marginBottom="5px">
+                <AlertIcon />
+                <AlertTitle>{msgDelete}</AlertTitle>
+                <Spacer />
+                <CloseButton
+                    onClick={() => setIsVisible(false)}
+                />
+            </Alert>
+        ) : null
+    }
+
+
+
+    const NextArrow = (props) => {
+        const { onClick } = props;
+        return (
+            <Button
+                bg="white"
+                onClick={onClick}
+                onMouseEnter={() => setIndexImages(indexImages)}
+                style={{
+                    position: "absolute",
+                    right: "5px",
+                    top: "calc(50% - 20px)",
+                    color: "black",
+                    borderRadius: "100%",
+                    width: "20px",
+                    display: indexImages >= 0 ? "flex" : "none",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    zIndex: 1,
+                    opacity: 1
+                }}
+            >
+                <FaArrowRight />
+            </Button>
+        );
+    };
+
+    const PrevArrow = (props) => {
+        const { onClick } = props;
+        return (
+            <Button
+                bg="white"
+                onClick={onClick}
+                onMouseEnter={() => setIndexImages(indexImages)}
+                // display = {indexImages === index? "block" : "none"}
+                style={{
+                    position: "absolute",
+                    left: "5px",
+                    top: "calc(50% - 20px)",
+                    color: "black",
+                    borderRadius: "100%",
+                    width: "20px",
+                    display: indexImages >= 0 ? "flex" : "none",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    zIndex: 1,
+                    opacity: 1
+                }}
+            >
+                <FaArrowLeft />
+            </Button>
+        );
+    };
 
     return (
         <Box marginTop="10px">
+            <ShowAlertDelete />
             <Flex gap="10px" justifyContent="center" alignItems="center" flexWrap="wrap">
                 {data && data.map((item, index) => (
                     <Box width="300px" height="450px" border="4px solid #f1f1f1" borderRadius="15px">
                         <Box position="relative" margin="0" p={1} height="70%">
                             <Skeleton isLoaded={!loadingData}>
                                 <Box>
-                                    {/* <Carousel
-                                        autoPlay
-                                        infiniteLoop
-                                        showArrows={true}> */}
+                                    <Slider
+                                        dots={true}
+                                        infinite={true}
+                                        speed={500}
+                                        slidesToShow={1}
+                                        slidesToScroll={1}
+                                        nextArrow={indexImages === index ? <NextArrow /> : null}
+                                        prevArrow={indexImages === index ? <PrevArrow /> : null}>
                                         {item.images && item.images.map((image, i) => (
-                                            <Box key={i}>
+                                            <Box key={i} onMouseEnter={() => setIndexImages(index)} onMouseOut={() => setIndexImages(-1)}>
                                                 <Image cursor="pointer" height="150px" width="100%" objectFit="cover" borderRadius="5px" src={`http://localhost:2000/roomPicture/${image.picture}`} />
                                             </Box>
                                         ))}
-                                    {/* </Carousel> */}
+                                    </Slider>
                                 </Box>
                             </Skeleton>
                             <Box marginLeft="4" marginTop="15px">
@@ -351,7 +448,7 @@ const RoomCard = () => {
                                 <Flex alignItems="center" gap="12px" marginTop="5px">
                                     <Box>
                                         {item.highSeasons && item.highSeasons.map(room => {
-                                            if (new Date(room.start_date) <= new Date() && new Date(room.end_date) > new Date()) {
+                                            if (new Date(room.start_date) <= new Date() && new Date(room.end_date) >= new Date()) {
                                                 return (
                                                     <Flex gap="5px" alignItems="center">
                                                         <Flex flexDirection="column" alignItems="center">
@@ -379,7 +476,7 @@ const RoomCard = () => {
                                             }
                                         })}
                                         {item.highSeasons && item.highSeasons.filter(room => new Date(room.start_date)
-                                            <= new Date() && new Date(room.end_date) > new Date()).length === 0 && (
+                                            <= new Date() && new Date(room.end_date) >= new Date()).length === 0 && (
                                                 <Flex alignItems="center" gap="5px">
                                                     <Skeleton isLoaded={!loadingData}>
                                                         <Text fontSize="12px" fontFamily="sans-serif" color="#67a0d9">
@@ -398,17 +495,35 @@ const RoomCard = () => {
                                 </Flex>
                                 <Divider borderColor="#808080" width="90%" marginTop="10px" />
                                 <Flex marginTop="10px" alignItems="center" gap="5px">
-                                    <Box bg="#d9efe4" width="70px" borderRadius="5px">
-                                        <Skeleton isLoaded={!loadingData}>
-                                            {item.availability ? (
-                                                <Text color="#539372" textAlign="center" fontWeight="bold" fontFamily="sans-serif" onClick={() => handleDisableRoom(item)} cursor="pointer">Active</Text>
-                                            ) : (
-                                                <Text color="#5f5f5f" bg="#e5e5e5" textAlign="center" fontWeight="bold" fontFamily="sans-serif" onClick={() => handleAlvaibleRoom(item)} cursor="pointer">Disable</Text>
-                                            )}
-                                        </Skeleton>
-                                    </Box>
+                                    {item.unavailableDates && item.unavailableDates.map(room => {
+                                        if (new Date(room.start_date) <= new Date() && new Date(room.end_date) >= new Date()) {
+                                            return (
+                                                <Skeleton isLoaded={!loadingData}>
+                                                    <Box bg="#e4e4e4" width="70px" borderRadius="5px">
+                                                        <Text color="#5f5f5f" textAlign="center" fontWeight="bold" fontFamily="sans-serif" cursor="pointer">Off Market</Text>
+                                                    </Box>
+                                                </Skeleton>
+                                            )
+                                        } else {
+                                            return null
+                                        }
+                                    })}
+                                    {item.unavailableDates && item.unavailableDates.filter(room => new Date(room.start_date)
+                                        <= new Date() && new Date(room.end_date) >= new Date()).length === 0 && (
+                                            <Skeleton isLoaded={!loadingData}>
+                                                <Box bg="#d9efe4" width="70px" borderRadius="5px">
+                                                    <Text color="#539372" textAlign="center" fontWeight="bold" fontFamily="sans-serif" cursor="pointer">Active</Text>
+                                                </Box>
+                                            </Skeleton>
+                                        )}
                                     <Skeleton isLoaded={!loadingData}>
-                                        <Text color="#a8a8a8" marginLeft="5px" fontSize="12px">Updated Nov 29</Text>
+                                        <Text color="#a8a8a8" marginLeft="5px" fontSize="12px">
+                                            Made on {new Date(item.createdAt).toLocaleDateString('id-ID', {
+                                                year: 'numeric',
+                                                month: 'numeric',
+                                                day: 'numeric'
+                                            })}
+                                        </Text>
                                     </Skeleton>
                                     <Flex alignItems="center" cursor="pointer" onClick={() => dispatch(openModalCertainDate(item))}>
                                         <InputCertainDate />

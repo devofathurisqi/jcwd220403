@@ -62,6 +62,7 @@ const handleRefreshToken = async (req, res) => {
       res.json({
         email: userInfo.email,
         name: userInfo.fullName,
+        createdAt : userInfo.createdAt,
         userId: userInfo.id,
         userPhoto: userInfo.photo,
         isTenant: userInfo.isTenant,

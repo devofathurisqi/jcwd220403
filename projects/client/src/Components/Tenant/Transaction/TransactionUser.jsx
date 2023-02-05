@@ -35,6 +35,7 @@ import WaitPayment from './WaitPayment';
     const [isloading, setIsloading] = useState(true);
     const { auth } = useAuth();
     const [data, setData] = useState([])
+    console.log(data)
     const [show, setShow] = useState(true)
     const axiosPrivate = useAxiosPrivate();
     const [isMobile] = useMediaQuery('(max-width: 481px)');

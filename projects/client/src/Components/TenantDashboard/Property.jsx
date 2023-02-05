@@ -1,24 +1,22 @@
-import React, { useState } from 'react'
-import { Box, Divider, Flex, Text, Icon, Spacer, useBreakpointValue } from "@chakra-ui/react"
+import React, { useEffect, useState } from 'react'
+import {
+    Box, Divider, Flex, Text, Icon, Spacer, useBreakpointValue,
+    Menu, MenuButton, Portal, MenuList, MenuItem
+} from "@chakra-ui/react"
 import { RiDashboardFill } from "react-icons/ri"
-import { BsListUl } from "react-icons/bs"
-import { RxDividerVertical } from "react-icons/rx"
+import { useDispatch } from "react-redux"
 import { AiOutlineDown } from "react-icons/ai"
 import { Link } from "react-router-dom"
+import { activeBestSeller, activeStatus, activeNotSold, Sort } from '../../Redux/FilterProperty'
 
 //import component
 import CardProperty from './CardProperty'
 
 const Property = () => {
     const [indexAcctive, setIndexAcctive] = useState(0)
-
-    const RenderComponent = () => {
-        if (indexAcctive === 0) {
-            return (
-                <CardProperty />
-            )
-        }
-    }
+    const [sortBy, setSortBy] = useState("Newest to Oldest")
+    const [listItemSort, setListItemSort] = useState("Oldest to Newest")
+    const dispatch = useDispatch()
 
     const flexDisplay = useBreakpointValue({
         base: "none",
@@ -30,56 +28,63 @@ const Property = () => {
         md: "",
         lg: ""
     })
+    const indexActiveStatusAll = () => {
+        setIndexAcctive(0)
+        dispatch(activeStatus())
+    }
+    const indexActiveBestSeller = () => {
+        setIndexAcctive(1)
+        dispatch(activeBestSeller())
+    }
+    const indexActiveNotSold = () => {
+        setIndexAcctive(2)
+        dispatch(activeNotSold())
+    }
+
+    const RenderComponent = () => {
+        return (
+            <CardProperty />
+        )
+    }
+
+    const handleMenuButton = () => {
+        if (sortBy === "Newest to Oldest") {
+            setListItemSort("Oldest to Newest")
+        } else if (listItemSort === "Oldest to Newest") {
+            setListItemSort("Newest to Oldest")
+        }
+    }
+    const handleMenuItem = () => {
+        if (listItemSort === "Oldest to Newest") {
+            setSortBy("Oldest to Newest")
+            dispatch(Sort("ASC"))
+        } else if (listItemSort === "Newest to Oldest") {
+            setSortBy("Newest to Oldest")
+            dispatch(Sort("DESC"))
+        }
+    }
 
     return (
         <Box p={12}>
             <Text fontWeight="bold" fontSize="26px">Properties</Text>
-            <Flex borderBottom="2px solid #f0f0f0" paddingBottom="10px" flexWrap="wrap" justifyContent="center">
-                <Box border="2px solid #ededed" borderRadius="10px" width="max-content" marginTop="10px" display={flexDisplay}>
+            <Flex borderBottom="2px solid #f0f0f0" paddingBottom="10px" flexWrap="wrap" justifyContent="center" gap="5px">
+                <Box border="2px solid #ededed" borderRadius="10px" width="max-content" marginTop="10px">
                     <Flex p={2}>
-                        <Flex gap="5px" alignItems="center" cursor="pointer" onClick={() => setIndexAcctive(0)}>
-                            <Text color={indexAcctive === 0 ? "black" : "#c6c6c6"} >Status</Text>
-                            <Box>
-                                <Flex gap="5px">
-                                    <Text color={indexAcctive === 0 ? "black" : "#c6c6c6"}>All</Text>
-                                    <Box borderRadius="30px" backgroundColor={indexAcctive === 0 ? "#106fd2" : "#dbdbdd"}
-                                        width="25px" textAlign="center" color={indexAcctive === 0 ? "white" : "#c6c6c6"}>8</Box>
-                                </Flex>
-                            </Box>
+                        <Flex gap="5px" alignItems="center" cursor="pointer" onClick={indexActiveStatusAll}>
+                            <Text color={indexAcctive === 0 ? "#176dc8" : "#c6c6c6"} >Status All</Text>
                             <Divider borderColor="#c6c6c6" orientation='vertical' marginLeft="5px" />
                         </Flex>
-                        <Flex gap="5px" alignItems="center" marginLeft="5px" cursor="pointer" onClick={() => setIndexAcctive(1)}>
-                            <Text color={indexAcctive === 1 ? "black" : "#c6c6c6"}>Active</Text>
-                            <Box>
-                                <Flex gap="5px">
-                                    <Box borderRadius="30px" backgroundColor={indexAcctive === 1 ? "#106fd2" : "#dbdbdd"}
-                                        width="25px" textAlign="center" color={indexAcctive === 1 ? "white" : "#c6c6c6"}>3</Box>
-                                </Flex>
-                            </Box>
+                        <Flex gap="5px" alignItems="center" marginLeft="5px" cursor="pointer" onClick={indexActiveBestSeller}>
+                            <Text color={indexAcctive === 1 ? "#176dc8" : "#c6c6c6"}>Best Seller</Text>
                             <Divider borderColor="#c6c6c6" orientation='vertical' marginLeft="5px" />
                         </Flex>
-                        <Flex gap="5px" alignItems="center" marginLeft="5px" cursor="pointer" onClick={() => setIndexAcctive(2)}>
-                            <Text color={indexAcctive === 2 ? "black" : "#c6c6c6"}>Off Market</Text>
-                            <Box>
-                                <Flex gap="5px">
-                                    <Box borderRadius="30px" backgroundColor={indexAcctive === 2 ? "#106fd2" : "#dbdbdd"}
-                                        width="25px" textAlign="center" color={indexAcctive === 2 ? "white" : "#c6c6c6"}>2</Box>
-                                </Flex>
-                            </Box>
+                        <Flex gap="5px" alignItems="center" marginLeft="5px" cursor="pointer" onClick={indexActiveNotSold}>
+                            <Text color={indexAcctive === 2 ? "#176dc8" : "#c6c6c6"}>Not Sold Yet</Text>
                             <Divider borderColor="#c6c6c6" orientation='vertical' marginLeft="5px" />
-                        </Flex>
-                        <Flex gap="5px" alignItems="center" marginLeft="5px" cursor="pointer" onClick={() => setIndexAcctive(3)}>
-                            <Text color={indexAcctive === 3 ? "black" : "#c6c6c6"}>Draft</Text>
-                            <Box>
-                                <Flex gap="5px">
-                                    <Box borderRadius="30px" backgroundColor={indexAcctive === 3 ? "#106fd2" : "#dbdbdd"}
-                                        width="25px" textAlign="center" color={indexAcctive === 3 ? "white" : "#c6c6c6"}>7</Box>
-                                </Flex>
-                            </Box>
                         </Flex>
                     </Flex>
                 </Box>
-                <Box border="2px solid #ededed" borderRadius="10px" width="max-content" marginTop="10px" marginLeft="10px" display={flexDisplay}>
+                <Box border="2px solid #ededed" borderRadius="10px" width="max-content" marginTop="10px">
                     <Link to='/tenant/add-property'>
                         <Flex p={2} justifyContent="center" alignItems="center" cursor="pointer">
                             <Flex alignItems="center" gap="5px" textAlign="center">
@@ -93,10 +98,22 @@ const Property = () => {
                 <Spacer display={flexDisplay} />
                 <Box border="2px solid #ededed" borderRadius="10px" width="max-content" marginTop="10px" >
                     <Flex p={2} justifyContent="center" alignItems="center" gap="5px" >
-                        <Text color="#999999" fontFamily="sans-serif">Sort by</Text>
-                        <Text color="#575758" fontFamily="sans-serif" fontWeight="bold">Newest to Oldest</Text>
-                        <Icon as={AiOutlineDown} color="#878787" boxSize="20px" />
+                        <Text color="#999999" fontFamily="sans-serif">Sort By</Text>
+                        <Menu>
+                            <MenuButton onClick={handleMenuButton}>
+                                <Flex alignItems="center" justifyContent="space-between">
+                                    <Text color="#575758" fontFamily="sans-serif" fontWeight="bold" marginRight="5px">{sortBy}</Text>
+                                    <Icon as={AiOutlineDown} color="#878787" boxSize="20px" />
+                                </Flex>
+                            </MenuButton>
+                            <Portal>
+                                <MenuList marginTop="5px">
+                                    <MenuItem onClick={handleMenuItem}>{listItemSort}</MenuItem>
+                                </MenuList>
+                            </Portal>
+                        </Menu>
                     </Flex>
+
                 </Box>
             </Flex>
             <RenderComponent />

@@ -13,21 +13,25 @@ import axios from "../../api/axios"
 import useAuth from '../../hooks/useAuth'
 import { AiOutlineCloudUpload } from "react-icons/ai"
 import { useEffect } from 'react'
+import "../../Styles/inputFile.css"
 
 const InputMorePictureProperty = () => {
     const dispatch = useDispatch()
     const openDrawer = useSelector((state) => state.MorePictureProperty.isDrawerOpen)
     const picture = useSelector((state) => state.MorePictureProperty.picture)
     const imageUrl = useSelector((state) => state.MorePictureProperty.imageUrl)
+    const propertyId = useSelector((state) => state.MorePictureProperty.idProperty)
+    console.log(propertyId)
     const [msgAddPicture, setMsgAddPicture] = useState("")
     const [load, setLoad] = useState(false)
     const [dataImages, setDataImages] = useState()
+    console.log(dataImages)
     const toast = useToast()
     const { auth } = useAuth();
 
     const getImagesProperty= async () => {
         try {
-            const response = await axios.get(`/getmorePictureProperty/${auth.tenantId}`)
+            const response = await axios.get(`/getmorePictureProperty/${propertyId}`)
             setDataImages(response.data[0].propertypictures)
         } catch (err) {
             console.log(err)
@@ -36,7 +40,7 @@ const InputMorePictureProperty = () => {
 
     useEffect(() => {
         getImagesProperty()
-    }, [])
+    }, [propertyId])
 
     const handlePictureChange = (e) => {
         const picture = e.target.files[0];
@@ -49,7 +53,7 @@ const InputMorePictureProperty = () => {
             const formData = new FormData()
             formData.append('file', picture)
 
-            await axios.post(`/createMorePictureProperty/${auth.tenantId}`, formData)
+            await axios.post(`/createMorePictureProperty/${propertyId}`, formData)
             setLoad(true)
             setTimeout(() => {
                 setLoad(false)
@@ -123,8 +127,9 @@ const InputMorePictureProperty = () => {
                                 </Stack>
                             </Box>
                         </Flex>
+                        <Flex justifyContent="center" alignItems="center" gap="10px">
                         {dataImages ? (dataImages.map((image, i) => (
-                            <Flex justifyContent="center" alignItems="center" flexWrap="wrap" gap="10px">
+                            <Flex justifyContent="center" alignItems="center">
                                 <Card
                                     direction={{ base: 'column', sm: 'row' }}
                                     overflow='hidden'
@@ -140,7 +145,7 @@ const InputMorePictureProperty = () => {
 
                                     <Stack>
                                         <CardBody>
-                                            <Heading size='md'>CreatedAt : {image.createdAt}</Heading>
+                                            <Heading size='md'>Dibuat : {new Date (image.createdAt).toLocaleDateString()}</Heading>
                                             <Text py='2'>
                                                 Your image type is : {image.type} <br />
                                                 Your image size is : {image.size} bytes
@@ -155,6 +160,7 @@ const InputMorePictureProperty = () => {
                                 </Card>
                             </Flex>
                         ))) : (<Text textAlign="center">Anda belum menambahkan foto untuk ruangan ini</Text>)}
+                        </Flex>
                     </DrawerBody>
 
                     <DrawerFooter>

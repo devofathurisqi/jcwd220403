@@ -32,6 +32,7 @@ import { BiFilter } from 'react-icons/bi';
     const [isloading, setIsloading] = useState(true);
     const { auth } = useAuth();
     const [data, setData] = useState([])
+    console.log(data)
     const axiosPrivate = useAxiosPrivate();
     const [isMobile] = useMediaQuery('(max-width: 481px)');
   

@@ -5,6 +5,7 @@ import DoneCreatePropertiesSlice from "./DoneCreatePropertiesSlice"
 import MorePictureProperty from "./MorePictureProperty"
 import CertainDate from "./CertainDate"
 import PropertySlice from "./PropertySlice"
+import FilterProperty from "./FilterProperty"
 
 
 export default configureStore({
@@ -14,6 +15,7 @@ export default configureStore({
         DoneCreatePropertiesSlice,
         MorePictureProperty,
         CertainDate,
-        PropertySlice
+        PropertySlice,
+        FilterProperty
     }
 })

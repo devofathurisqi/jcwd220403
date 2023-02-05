@@ -55,6 +55,11 @@ const MoreRooms = () => {
             setLoad(true)
             setTimeout(() => {
                 setLoad(false)
+                setName("")
+                setDescription("")
+                setPrice()
+                setPicture(null)
+                setMsgError("")
                 toast({
                     title: 'Success',
                     description: 'Room has been created',

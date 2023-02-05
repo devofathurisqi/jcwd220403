@@ -30,6 +30,7 @@ import ReportPages from '../../Pages/Tenant/Report';
 import ChartLine from '../Tenant/Report/ChartLine';
 import AgendaCalender from '../Tenant/Report/CalenderAgenda';
 import DashboardHomeTenant from '../../Pages/Tenant/DashboardHomeTenant';
+import Settings from './Settings';
 
 const SideBarDashboardAndRenderComponent = () => {
     const [activeIndex, setActiveIndex] = useState(1);
@@ -143,6 +144,12 @@ const SideBarDashboardAndRenderComponent = () => {
             return (
                 <Box>
                     <ReportPages/> 
+                </Box>
+            )
+        } else if (activeIndex === 7 || activeIndexFromMobile === 7){
+            return (
+                <Box>
+                    <Settings/>
                 </Box>
             )
         }

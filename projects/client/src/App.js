@@ -22,7 +22,6 @@ import './Styles/swall.css';
 import 'animate.css';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-
 import Category from './Components/Category';
 import BookingDetail from './Pages/Booking/BookingDetail';
 import PaymentPage from './Pages/Payment/PaymentPage';

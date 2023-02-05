@@ -26,11 +26,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: false
       },
-      disableRoom: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
-      }
     },
     {
       sequelize,

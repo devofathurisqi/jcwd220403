@@ -16,8 +16,8 @@ import { MdOutlineBedroomChild } from "react-icons/md"
 import { AiOutlineDown } from "react-icons/ai"
 import axios from "../../api/axios"
 import useAuth from '../../hooks/useAuth'
-import { useDispatch } from "react-redux"
-import { getName } from '../../Redux/PropertySlice'
+import { useDispatch, useSelector } from "react-redux"
+import { getName, statusAll, activeMarket, offMarket } from '../../Redux/PropertySlice'
 import { useEffect } from 'react'
 
 //import component
@@ -31,6 +31,11 @@ const Room = () => {
     const [propertyBy, setPropertyBy] = useState()
     const { auth } = useAuth();
     const dispatch = useDispatch()
+
+    const statusAllLength = useSelector((state) => state.PropertySlice.value.statusAllLength)
+    const activeLength = useSelector((state) => state.PropertySlice.value.statusActiveLength)
+    const offMarketLength = useSelector((state) => state.PropertySlice.value.statusOffMarketLength)
+
 
     const getNameProperty = async () => {
         try {
@@ -50,9 +55,22 @@ const Room = () => {
         dispatch(getName(propertyBy))
     }, [propertyBy])
 
+    const activeStatusAll = () => {
+        setIndexAcctive(0)
+        dispatch(statusAll())
+    }
+    const statusActiveMarket = () => {
+        setIndexAcctive(1)
+        dispatch(activeMarket())
+    }
+    const activeStatusOffMarket = () => {
+        setIndexAcctive(2)
+        dispatch(offMarket())
+    }
+
 
     const RenderComponent = () => {
-        if (indexAcctive === 0) {
+        if (indexAcctive < 3) {
             return (
                 <RoomCard />
             )
@@ -76,33 +94,33 @@ const Room = () => {
             <Flex borderBottom="2px solid #f0f0f0" paddingBottom="10px" flexWrap="wrap" justifyContent="center">
                 <Box border="2px solid #ededed" borderRadius="10px" width="max-content" marginTop="10px">
                     <Flex p={2}>
-                        <Flex gap="5px" alignItems="center" cursor="pointer" onClick={() => setIndexAcctive(0)}>
+                        <Flex gap="5px" alignItems="center" cursor="pointer" onClick={activeStatusAll}>
                             <Text color={indexAcctive === 0 ? "black" : "#c6c6c6"}>Status</Text>
                             <Box>
                                 <Flex gap="5px">
                                     <Text color={indexAcctive === 0 ? "black" : "#c6c6c6"}>All</Text>
                                     <Box borderRadius="30px" backgroundColor={indexAcctive === 0 ? "#106fd2" : "#dbdbdd"}
-                                        width="25px" textAlign="center" color={indexAcctive === 0 ? "white" : "#c6c6c6"}>8</Box>
+                                        width="25px" textAlign="center" color={indexAcctive === 0 ? "white" : "#c6c6c6"}>{statusAllLength}</Box>
                                 </Flex>
                             </Box>
                             <Divider borderColor="#c6c6c6" orientation='vertical' marginLeft="5px" />
                         </Flex>
-                        <Flex gap="5px" alignItems="center" marginLeft="5px" cursor="pointer" onClick={() => setIndexAcctive(1)}>
+                        <Flex gap="5px" alignItems="center" marginLeft="5px" cursor="pointer" onClick={statusActiveMarket}>
                             <Text color={indexAcctive === 1 ? "black" : "#c6c6c6"}>Active</Text>
                             <Box>
                                 <Flex gap="5px">
                                     <Box borderRadius="30px" backgroundColor={indexAcctive === 1 ? "#106fd2" : "#dbdbdd"}
-                                        width="25px" textAlign="center" color={indexAcctive === 1 ? "white" : "#c6c6c6"}>3</Box>
+                                        width="25px" textAlign="center" color={indexAcctive === 1 ? "white" : "#c6c6c6"}>{activeLength}</Box>
                                 </Flex>
                             </Box>
                             <Divider borderColor="#c6c6c6" orientation='vertical' marginLeft="5px" />
                         </Flex>
-                        <Flex gap="5px" alignItems="center" marginLeft="5px" cursor="pointer" onClick={() => setIndexAcctive(2)}>
+                        <Flex gap="5px" alignItems="center" marginLeft="5px" cursor="pointer" onClick={activeStatusOffMarket}>
                             <Text color={indexAcctive === 2 ? "black" : "#c6c6c6"}>{isMobile? "Off" : "Off Market"}</Text>
                             <Box>
                                 <Flex gap="5px">
                                     <Box borderRadius="30px" backgroundColor={indexAcctive === 2 ? "#106fd2" : "#dbdbdd"}
-                                        width="25px" textAlign="center" color={indexAcctive === 2 ? "white" : "#c6c6c6"}>2</Box>
+                                        width="25px" textAlign="center" color={indexAcctive === 2 ? "white" : "#c6c6c6"}>{offMarketLength}</Box>
                                 </Flex>
                             </Box>
                             <Divider borderColor="#c6c6c6" orientation='vertical' marginLeft="5px" />

@@ -59,17 +59,10 @@ module.exports = {
         try {
             const { country, province, city } = req.body
 
-            //validasi untuk country, province, city
             if (!country) throw "Country is required"
             if (!province) throw "Province is required"
             if (!city) throw "City is required"
 
-            // if (!/^[A-Z][a-zA-Z\s]*$/.test(country)) throw "Country must start with an uppercase letter"
-            // if (!/^[A-Z][a-zA-Z\s]*$/.test(province)) throw "Province must start with an uppercase letter"
-            // if (!/^[A-Z][a-zA-Z\s]*$/.test(city)) throw "City must start with an uppercase letter"
-
-
-            //everything for location detail
             const address = `${city}, ${province}, ${country}`
             const API_KEY = process.env.GEOCODE_API_KEY;
             const responses = await axios.get(
@@ -119,10 +112,10 @@ module.exports = {
             }
 
             const propertyId = await database.property.findOne({
-                where : {
-                    name : req.query.name
+                where: {
+                    name: req.query.name
                 },
-                raw:true
+                raw: true
             })
             await database.room.create({
                 name: name,
@@ -230,7 +223,7 @@ module.exports = {
             }
             const getPropertyId = await database.property.findOne({
                 where: {
-                    tenantId: req.params.tenantId
+                    id: req.params.id
                 },
                 raw: true
             })
@@ -332,9 +325,9 @@ module.exports = {
         try {
             const { country, province, city } = req.body
 
-            if (!/^[A-Z][a-zA-Z\s]*$/.test(country)) throw "Country must start with an uppercase letter"
-            if (!/^[A-Z][a-zA-Z\s]*$/.test(province)) throw "Province must start with an uppercase letter"
-            if (!/^[A-Z][a-zA-Z\s]*$/.test(city)) throw "City must start with an uppercase letter"
+            if (!country) throw "country is required"
+            if (!province) throw "province is required"
+            if (!city) throw "city is required"
 
             const address = `${city}, ${province}, ${country}`
             const API_KEY = process.env.GEOCODE_API_KEY;
@@ -402,11 +395,56 @@ module.exports = {
     },
     deleteAllDataProperty: async (req, res) => {
         try {
+            const { lanjutkan } = req.body
+
             const propertyId = await database.property.findOne({
                 where: {
                     id: req.params.id
                 }
             })
+
+            const checkValidasiRoom = await database.room.findAll({
+                attributes: ['id', 'name'],
+                where: {
+                    propertyId: propertyId.id
+                },
+                raw: true
+            })
+
+            const Room = checkValidasiRoom.map((item) => {
+                return item.id
+            })
+            const Transactions = await database.transaction.findAll({
+                attributes: ['roomId', 'checkIn', 'checkOut'],
+                where: {
+                    roomId: Room
+                },
+                raw: true
+            })
+            const checkTransactions = Transactions.map((item) => {
+                return new Date(item.checkIn) >= new Date() && new Date(item.checkOut) >= new Date()
+            })
+            const finalCheckTransactions = (checkTransactions.includes(true))
+            if (finalCheckTransactions === true) throw "You cannot delete because there is a transaction in progress"
+
+            if (lanjutkan === true) {
+                await database.image.destroy({
+                    where: {
+                        roomId: Room
+                    }
+                })
+                await database.unavailableDates.destroy({
+                    where: {
+                        roomId: Room
+                    }
+                })
+                await database.highSeason.destroy({
+                    where: {
+                        roomId: Room
+                    }
+                })
+            } else throw "Your room could be related to high seasons, unavailable date or a picture of your room that we have saved, proceed to delete it?"
+
             const propertyFacility = await database.propertyFacility.findOne({
                 where: {
                     propertyId: propertyId.id
@@ -422,6 +460,11 @@ module.exports = {
                     id: propertyId.categoryId
                 }
             })
+            await database.propertypicture.destroy({
+                where: {
+                    propertyId: propertyId.id
+                }
+            })
             await database.propertyFacility.destroy({
                 where: {
                     propertyId: propertyId.id
@@ -433,6 +476,7 @@ module.exports = {
                     id: propertyFacility.facilityId
                 }
             })
+
             res.status(200).send("Property Deleted")
         } catch (err) {
             console.log(err)
@@ -441,7 +485,29 @@ module.exports = {
     },
     deleteDataRooms: async (req, res) => {
         try {
+            const Transactions = await database.transaction.findAll({
+                attributes: ['roomId', 'checkIn', 'checkOut'],
+                where: {
+                    roomId: req.params.id
+                },
+                raw: true
+            })
+            const checkTransactions = Transactions.map(date => {
+                const result = new Date(date.checkIn) >= new Date() && new Date(date.checkOut) >= new Date()
+                return result
+            })
+            if (checkTransactions.includes(true) === true) throw "transaction is in progress, cannot delete!"
             await database.image.destroy({
+                where: {
+                    roomId: req.params.id
+                }
+            })
+            await database.unavailableDates.destroy({
+                where: {
+                    roomId: req.params.id
+                }
+            })
+            await database.highSeason.destroy({
                 where: {
                     roomId: req.params.id
                 }
@@ -459,15 +525,28 @@ module.exports = {
     },
     getAllDataProperty: async (req, res) => {
         try {
+            const { orderByUser } = req.query
+            console.log(orderByUser)
+            const order = orderByUser === "ASC" ? [["createdAt", "ASC"]] : [["createdAt", "DESC"]];
             const response = await database.property.findAll({
                 where: { tenantId: req.params.tenantId },
+                order,
                 include: [
                     { model: database.category },
                     {
                         model: database.facility,
                         through: { attributes: [] }
                     },
-                    { model: database.room },
+                    {
+                        model: database.room,
+                        attributes: ['id', 'name'],
+                        include: [
+                            {
+                                model: database.transaction,
+                                attributes: ['roomId', 'transactionStatus']
+                            }
+                        ]
+                    },
                     {
                         model: database.propertypicture,
                         attributes: [[sequelize.col('name'), 'picture']]
@@ -518,7 +597,7 @@ module.exports = {
         try {
             const response = await database.property.findAll({
                 where: {
-                    tenantId: req.params.tenantId
+                    id: req.params.id
                 }, include: [{
                     model: database.propertypicture
                 }]
@@ -561,7 +640,7 @@ module.exports = {
                 attributes: ["name", "id"],
                 where: {
                     tenantId: req.params.tenantId,
-                    name : req.query.name
+                    name: req.query.name
                 }, include: [
                     {
                         model: database.room,
@@ -627,15 +706,15 @@ module.exports = {
         }
     },
     getPropertyNamesByTenantId: async (req, res) => {
-        try{
+        try {
             const response = await database.property.findAll({
                 attributes: ["name"],
-                where : {
+                where: {
                     tenantId: req.params.tenantId
                 }
             })
             res.status(200).send(response)
-        }catch(err){
+        } catch (err) {
             console.log(err)
             res.status(404).send(err)
         }

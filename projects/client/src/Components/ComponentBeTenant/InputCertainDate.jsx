@@ -21,11 +21,13 @@ import { Carousel } from 'react-responsive-carousel';
 import { IoPricetagsOutline, IoHomeOutline } from "react-icons/io5"
 import { BsArrowBarRight, BsArrowBarDown } from "react-icons/bs"
 import { AiOutlineFileDone, AiOutlinePercentage } from "react-icons/ai"
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa"
 import { VscServerProcess } from "react-icons/vsc"
 import { GiPriceTag } from "react-icons/gi"
 import { CgArrowLongDownR } from "react-icons/cg"
 import { MdOutlineAutoDelete } from "react-icons/md"
 import Axios from "axios"
+import Slider from 'react-slick';
 
 const InputCertainDate = () => {
     const isOpenModalCertainDate = useSelector((state) => state.CertainDate.isOpen)
@@ -293,10 +295,71 @@ const InputCertainDate = () => {
         lg: "30%"
     })
     const heightImage = useBreakpointValue({
-        base:"220px",
-        md:"400px",
+        base: "220px",
+        md: "400px",
         lg: "230px"
     })
+
+    const NextArrow = (props) => {
+        const { onClick } = props;
+        return (
+            <Button
+                bg="white"
+                onClick={onClick}
+                style={{
+                    position: "absolute",
+                    right: "5px",
+                    top: "calc(50% - 20px)",
+                    color: "black",
+                    borderRadius: "100%",
+                    width: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    zIndex: 1,
+                    opacity: 1
+                }}
+            >
+                <FaArrowRight />
+            </Button>
+        );
+    };
+
+    const PrevArrow = (props) => {
+        const { onClick } = props;
+        return (
+            <Button
+                bg="white"
+                onClick={onClick}
+                // display = {indexImages === index? "block" : "none"}
+                style={{
+                    position: "absolute",
+                    left: "5px",
+                    top: "calc(50% - 20px)",
+                    color: "black",
+                    borderRadius: "100%",
+                    width: "20px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    zIndex: 1,
+                    opacity: 1
+                }}
+            >
+                <FaArrowLeft />
+            </Button>
+        );
+    };
+
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        nextArrow: <NextArrow />,
+        prevArrow: <PrevArrow />,
+    };
 
     return (
         <Box>
@@ -326,7 +389,7 @@ const InputCertainDate = () => {
                                                     }
                                                 }}
                                                 tileDisabled={({ date }) => disableData.map(d => date >= new Date(d.start_date) && date <= new Date(d.end_date)).includes(true)}
-                                                
+
                                             />
                                         </Box>
                                     ) : (
@@ -342,7 +405,7 @@ const InputCertainDate = () => {
                                                     }
                                                 }}
                                                 tileDisabled={({ date }) => highSeasonsData.map(d => date >= new Date(d.start_date) && date <= new Date(d.end_date)).includes(true)}
-                                                
+
                                             />
                                         </Box>
                                     )}
@@ -369,7 +432,7 @@ const InputCertainDate = () => {
                                                     <Box boxShadow="md" p="5px">
                                                         <Flex flexDirection="column" gap="5px" justifyContent="center" alignItems="center">
                                                             <Icon as={new Date(d.end_date) <= new Date() ? AiOutlineFileDone : VscServerProcess} color={new Date(d.end_date) <= new Date() ? "green.500" : "red.500"} boxSize="25px" />
-                                                            <Text  color={new Date(d.end_date) <= new Date() ? "green.500" : "red.500"}>
+                                                            <Text color={new Date(d.end_date) <= new Date() ? "green.500" : "red.500"}>
                                                                 {new Date(d.end_date) <= new Date() ? "Done" : "On Proses"}
                                                             </Text>
                                                         </Flex>
@@ -384,17 +447,17 @@ const InputCertainDate = () => {
                                                     <Flex flexDirection="column" gap="5px">
                                                         <Text >Start Date: {new Date(d.start_date).toLocaleDateString()}</Text>
                                                         <Text >End Date: {new Date(d.end_date).toLocaleDateString()}</Text>
-                                                        <Text  color={new Date(d.end_date) <= new Date() ? "green.500" : "red.500"}>Status : On Proses</Text>
+                                                        <Text color={new Date(d.end_date) <= new Date() ? "green.500" : "red.500"}>Status : On Proses</Text>
                                                         <Icon as={MdOutlineAutoDelete} boxSize="25px" cursor="pointer" onClick={() => deleteHighSeason(d)} />
                                                     </Flex>
                                                     <Box boxShadow="md" p="5px">
                                                         <Flex flexDirection="column" gap="5px" justifyContent="center" alignItems="center">
                                                             <Icon as={GiPriceTag} color={new Date(d.end_date) <= new Date() ? "green.500" : "red.500"} boxSize="25px" />
-                                                            <Text  color={new Date(d.end_date) <= new Date() ? "green.500" : "red.500"}>
+                                                            <Text color={new Date(d.end_date) <= new Date() ? "green.500" : "red.500"}>
                                                                 Rp. {room.price}
                                                             </Text>
                                                             <Icon as={CgArrowLongDownR} color={new Date(d.end_date) <= new Date() ? "green.500" : "red.500"} boxSize="25px" />
-                                                            <Text  color={new Date(d.end_date) <= new Date() ? "green.500" : "red.500"}>
+                                                            <Text color={new Date(d.end_date) <= new Date() ? "green.500" : "red.500"}>
                                                                 Rp. {d.price}
                                                             </Text>
                                                         </Flex>
@@ -415,16 +478,14 @@ const InputCertainDate = () => {
                                     <option value="Set Special Price">Set Special Price</option>
                                     <option value="disable">Disable</option>
                                 </Select>
-                                <Carousel
-                                    autoPlay
-                                    infiniteLoop
-                                    showArrows={true}>
+                                <Slider {...settings}>
                                     {room && room.images.map((image) => (
                                         <Box borderRadius="10px">
                                             <Image height={heightImage} borderRadius="10px" src={`http://localhost:2000/roomPicture/${image.picture}`} />
                                         </Box>
                                     ))}
-                                </Carousel>
+                                </Slider>
+                                {/* </Carousel> */}
                                 <RenderComponentAfterOption />
                                 <AlertDataHoliday />
                                 {option === "Set Special Price" ? (

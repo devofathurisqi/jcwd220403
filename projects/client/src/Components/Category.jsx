@@ -128,7 +128,6 @@ const Category = () => {
             {DataFasility.map((item, index) => (
               <Box key={item.id} cursor="pointer" color={index === currentIndex ? "black" : "#717171"} _hover={{ color: "black" }} onClick={() => setCurrentIndex(index)}
                 borderBottom={index === currentIndex ? "2px solid black" : null} width="40px"
-
               >
                 <Flex flexDirection="column" justifyContent="center" alignItems="center">
                   <Icon as={item.img} boxSize={iconSize} />
