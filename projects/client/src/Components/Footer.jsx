@@ -117,7 +117,7 @@ const Footer = () => {
     return (
         <div>
             <Box
-                position='fixed'
+                position='fixed'z
                 zIndex={1}
                 style={{ minWidth: '100%' }}
                 p={0}

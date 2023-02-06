@@ -10,5 +10,7 @@ router.get('/api/transactions/tenant/:tenantId/:status', tenantTransaction.trans
 
 router.post('/api/transactions/accept', tenantTransaction.acceptTransaction);
 router.post('/api/transactions/reject', tenantTransaction.rejectTransaction);
+router.post('/api/transactions/cancelOrders/:id', tenantTransaction.cancelUserOrders);
+router.post('/api/transactions/acceptOrders/:id', tenantTransaction.acceptUserOrders);
 
 module.exports = router;

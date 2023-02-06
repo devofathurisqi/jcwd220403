@@ -7,9 +7,9 @@ const initialState = {
         active: false,
         offMarket: false,
         statusAll: true,
-        statusAllLength: null,
-        statusActiveLength: null,
-        statusOffMarketLength: null
+        statusAllLength: 0,
+        statusActiveLength: 0,
+        statusOffMarketLength: 0
     }
 }
 

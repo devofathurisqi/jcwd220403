@@ -160,10 +160,11 @@ const SideBarDashboardAndRenderComponent = () => {
             <Box display={displayMobile} width={widthSideNavbar}>
                 <Flex
                     direction="column"
-                    backgroundColor="#edeff1"
+                    backgroundColor="#ffffff"
                     width="auto"
                     gap="5px"
                     height="100%"
+                    boxShadow="md"
                 >
                     {items.map((item, index) => (
                         <Box key={index} p={2}>

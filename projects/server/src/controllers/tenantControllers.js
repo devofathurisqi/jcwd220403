@@ -422,7 +422,7 @@ module.exports = {
                 raw: true
             })
             const checkTransactions = Transactions.map((item) => {
-                return new Date(item.checkIn) >= new Date() && new Date(item.checkOut) >= new Date()
+                return new Date(item.checkOut) > new Date()
             })
             const finalCheckTransactions = (checkTransactions.includes(true))
             if (finalCheckTransactions === true) throw "You cannot delete because there is a transaction in progress"
@@ -493,8 +493,7 @@ module.exports = {
                 raw: true
             })
             const checkTransactions = Transactions.map(date => {
-                const result = new Date(date.checkIn) >= new Date() && new Date(date.checkOut) >= new Date()
-                return result
+                return new Date(date.checkOut) > new Date()
             })
             if (checkTransactions.includes(true) === true) throw "transaction is in progress, cannot delete!"
             await database.image.destroy({
@@ -733,4 +732,33 @@ module.exports = {
             res.status(404).send(err)
         }
     },
+    logoutAsTenant: async (req, res) => {
+        try {
+            const { tenantId, email } = req.params
+            const propertiess = await database.property.findAll({
+                attributes: ['tenantId'],
+                where: {
+                    tenantId: tenantId
+                },
+                raw: true
+            })
+            if (propertiess.length > 0) throw "You have not deleted all of your property that has been registered on the holistay, please delete it first"
+            await database.user.update({
+                isTenant: false,
+            }, {
+                where: {
+                    email: email
+                }
+            })
+            await database.tenant.destroy({
+                where: {
+                    id: tenantId
+                }
+            })
+            res.status(201).send("logout tenant success")
+        } catch (err) {
+            console.log(err)
+            res.status(401).send(err)
+        }
+    }
 }

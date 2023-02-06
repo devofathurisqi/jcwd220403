@@ -42,5 +42,6 @@ router.delete('/api/deleteproperty/:id', tenantControllers.deleteAllDataProperty
 router.delete('/api/deleteroom/:id', tenantControllers.deleteDataRooms);
 router.delete('/api/deleteroomimage/:id', tenantControllers.deleteRoomImages);
 router.delete('/api/deletepropertyimage/:id', tenantControllers.deletePropertyImage);
+router.delete('/api/logoutTenant/:tenantId/:email', tenantControllers.logoutAsTenant);
 
 module.exports = router;
