@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: false,
         },
       });
-      payment.belongsTo(models.paymentMethod, {
+      payment.belongsTo(models.paymentmethod, {
         foreignKey: {
           allowNull: false,
         },

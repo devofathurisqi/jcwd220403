@@ -10,7 +10,8 @@
 /build
 
 #public
-/src/Public
+/src/public
+/public
 
 # misc
 .DS_Store

@@ -28,6 +28,7 @@ export default function PaymentPage() {
   };
   useEffect(() => {
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isloading]);
 
   return isloading ? (

@@ -1,6 +1,7 @@
 const path = require('path');
 const database = require('../models');
 const tenant = database.tenant;
+const user = database.user;
 const checkKTP = require('../middlewares/checkKTP');
 
 const RegisterAsTenant = async (req, res) => {
@@ -44,6 +45,29 @@ const RegisterAsTenant = async (req, res) => {
       });
     }
 
+    // if (autoDetect) {
+    //   const check = await checkKTP(filename);
+    //   check == KTPNumber
+    //     ? res.status(200).send({ message: 'Automatic verification success' })
+    //     : res
+    //         .status(500)
+    //         .send({ message: 'Not a match, switch to manual verification' });
+    // } else {
+    //   res.status(200);
+    //   res.send({
+    //     status: true,
+    //     message:
+    //       'Photo is successufully uploaded, please wait for manual verification by our staff',
+    //     data: {
+    //       KTPNumber,
+    //       tenantId: newTenant?.id,
+    //       name: ktp.name,
+    //       mimetype: ktp.mimetype,
+    //       size: ktp.size,
+    //     },
+    //   });
+    // }
+
     const filename = `user${userId}${extensionName}`;
 
     const newTenant = await tenant.create({
@@ -52,11 +76,9 @@ const RegisterAsTenant = async (req, res) => {
       userId,
     });
 
-    console.log(newTenant);
-
     ktp.mv('./src/public/ktp/' + filename);
 
-    res.status(200);
+    res.status(201);
     res.send({
       status: true,
       message: 'file is uploaded',
@@ -68,29 +90,6 @@ const RegisterAsTenant = async (req, res) => {
         size: ktp.size,
       },
     });
-
-    if (autoDetect) {
-      const check = await checkKTP(filename);
-      check == KTPNumber
-        ? res.status(200).send({ message: 'Automatic verification success' })
-        : res
-            .status(500)
-            .send({ message: 'Not a match, switch to manual verification' });
-    } else {
-      res.status(200);
-      res.send({
-        status: true,
-        message:
-          'Photo is successufully uploaded, please wait for manual verification by our staff',
-        data: {
-          KTPNumber,
-          tenantId: newTenant?.id,
-          name: ktp.name,
-          mimetype: ktp.mimetype,
-          size: ktp.size,
-        },
-      });
-    }
   }
 };
 

@@ -107,6 +107,7 @@ export default function BookingDetail() {
 
   useEffect(() => {
     numberOfDays();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
 
   // console.log(date[0]);

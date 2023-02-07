@@ -79,6 +79,7 @@ function BookingDate({ inputDate, setInputDate }) {
 
   useEffect(() => {
     getPastTrasactionDates();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
   return (

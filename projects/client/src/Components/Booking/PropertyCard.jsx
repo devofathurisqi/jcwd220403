@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Card,
   CardBody,
@@ -9,10 +9,10 @@ import {
   Divider,
   Skeleton,
   HStack,
-} from "@chakra-ui/react";
-import { useState, useEffect } from "react";
-import axios from "../../api/axios";
-import { useParams } from "react-router-dom";
+} from '@chakra-ui/react';
+import { useState, useEffect } from 'react';
+import axios from '../../api/axios';
+import { useParams } from 'react-router-dom';
 
 function PropertyCard({ day, setDay }) {
   const [data, setData] = useState([]);
@@ -22,9 +22,9 @@ function PropertyCard({ day, setDay }) {
   function priceInCurrency() {
     const price = data.rooms[params.index].price;
 
-    let priceInRupiah = Intl.NumberFormat("id-ID", {
+    let priceInRupiah = Intl.NumberFormat('id-ID', {
       currency: `IDR`,
-      style: "currency",
+      style: 'currency',
     });
     return priceInRupiah.format(price);
   }
@@ -32,9 +32,9 @@ function PropertyCard({ day, setDay }) {
   function totalPrice() {
     const totalPrice = data.rooms[params.index].price * day;
 
-    let priceInRupiah = Intl.NumberFormat("id-ID", {
+    let priceInRupiah = Intl.NumberFormat('id-ID', {
       currency: `IDR`,
-      style: "currency",
+      style: 'currency',
     });
 
     return priceInRupiah.format(totalPrice);
@@ -52,29 +52,30 @@ function PropertyCard({ day, setDay }) {
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isloading]);
 
   return isloading ? (
     <Skeleton isLoaded={true}> </Skeleton>
   ) : (
     <Skeleton isLoaded={!isloading}>
-      <Card maxW="xl" boxShadow={"xl"}>
+      <Card maxW='xl' boxShadow={'xl'}>
         <CardBody>
           <Image
             src={
               process.env.REACT_APP_URL_PUBLIC +
-              "roomPicture/" +
+              'roomPicture/' +
               data.rooms[params.index].picture
             }
-            alt="Room picture"
-            borderRadius="lg"
+            alt='Room picture'
+            borderRadius='lg'
           />
-          <Stack mt="6" spacing="3">
-            <Heading size="xl">{data.rooms[params.index].name}</Heading>
+          <Stack mt='6' spacing='3'>
+            <Heading size='xl'>{data.rooms[params.index].name}</Heading>
             <Divider />
 
-            <Heading size="md">Price Details</Heading>
-            <HStack justifyContent={"space-between"}>
+            <Heading size='md'>Price Details</Heading>
+            <HStack justifyContent={'space-between'}>
               {day > 1 ? (
                 <Text>
                   {priceInCurrency()} x {day} nights
@@ -87,8 +88,8 @@ function PropertyCard({ day, setDay }) {
               <Text>{totalPrice()}</Text>
             </HStack>
             <Divider />
-            <HStack justifyContent={"space-between"}>
-              <Heading size="md">Total</Heading>
+            <HStack justifyContent={'space-between'}>
+              <Heading size='md'>Total</Heading>
               <Text>{totalPrice()}</Text>
             </HStack>
           </Stack>

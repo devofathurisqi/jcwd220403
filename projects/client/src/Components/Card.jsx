@@ -7,15 +7,15 @@ import axios from '../api/axios';
 import { Link } from 'react-router-dom';
 import useSearch from '../hooks/useSeacrh';
 import Slider from 'react-slick';
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa"
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { getPreciseDistance } from 'geolib';
 import 'swiper/css';
 
 function HomeCard() {
   const [currentData, setCurrentData] = useState();
-  console.log(currentData)
+  console.log(currentData);
   const [loading, setLoading] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(-1)
+  const [activeIndex, setActiveIndex] = useState(-1);
   const { search } = useSearch();
 
   const getdata = async () => {
@@ -24,7 +24,7 @@ function HomeCard() {
       const response = await axios.post('/landingpage', search);
       setCurrentData(response.data);
       setLoading(false);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (err) {
       console.log(err);
     }
@@ -32,6 +32,7 @@ function HomeCard() {
 
   useEffect(() => {
     getdata();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
   const Loadingg = () => {
@@ -40,8 +41,7 @@ function HomeCard() {
         <PulseLoader color='#19b4b5' size={30} margin='50px 0px' />
       </Center>
     );
-  }
-
+  };
 
   // ----------------------------------------------------------------------
 
@@ -49,21 +49,21 @@ function HomeCard() {
     const { onClick } = props;
     return (
       <Button
-        bg="white"
+        bg='white'
         onClick={onClick}
         onMouseEnter={() => setActiveIndex(activeIndex)}
         style={{
-          position: "absolute",
-          right: "5px",
-          top: "calc(50% - 20px)",
-          color: "black",
-          borderRadius: "100%",
-          width: "20px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          position: 'absolute',
+          right: '5px',
+          top: 'calc(50% - 20px)',
+          color: 'black',
+          borderRadius: '100%',
+          width: '20px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
           zIndex: 1,
-          opacity: 1
+          opacity: 1,
         }}
       >
         <FaArrowRight />
@@ -76,20 +76,20 @@ function HomeCard() {
     return (
       <Button
         onMouseEnter={() => setActiveIndex(activeIndex)}
-        bg="white"
+        bg='white'
         onClick={onClick}
         style={{
-          position: "absolute",
-          left: "5px",
-          top: "calc(50% - 20px)",
-          color: "black",
-          borderRadius: "100%",
-          width: "20px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          position: 'absolute',
+          left: '5px',
+          top: 'calc(50% - 20px)',
+          color: 'black',
+          borderRadius: '100%',
+          width: '20px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
           zIndex: 1,
-          opacity: 1
+          opacity: 1,
         }}
       >
         <FaArrowLeft />
@@ -120,6 +120,7 @@ function HomeCard() {
                 currentData.map((item, index) => {
                   return (
                     <Box
+                      key={index}
                       as={Link}
                       key={index}
                       to={'/detailpage/' + item.id}
@@ -141,15 +142,26 @@ function HomeCard() {
                           speed={500}
                           slidesToShow={1}
                           slidesToScroll={1}
-                          nextArrow={activeIndex === index ? <NextArrow /> : null}
-                          prevArrow={activeIndex === index ? <PrevArrow /> : null}
+                          nextArrow={
+                            activeIndex === index ? <NextArrow /> : null
+                          }
+                          prevArrow={
+                            activeIndex === index ? <PrevArrow /> : null
+                          }
                         >
                           {item.propertypictures.map((image, i) => (
-                            <Box key={i} onMouseEnter={() => setActiveIndex(index)}
-                              onMouseOut={() => (setActiveIndex(-1))}>
+                            <Box
+                              key={i}
+                              onMouseEnter={() => setActiveIndex(index)}
+                              onMouseOut={() => setActiveIndex(-1)}
+                            >
                               <Image
                                 objectFit='cover'
-                                src={process.env.REACT_APP_URL_PUBLIC + 'propertyPicture/' + image.picture}
+                                src={
+                                  process.env.REACT_APP_URL_PUBLIC +
+                                  'propertyPicture/' +
+                                  image.picture
+                                }
                                 width='270px'
                                 height='190px'
                               />
@@ -161,22 +173,30 @@ function HomeCard() {
                         <Text mt='2' fontWeight='bold' fontSize='sm'>
                           {item.name}
                         </Text>
-                        <Text
-                          fontSize='sm'
-                          fontWeight='bold'
-                          color='gray.400'
-                        >
+                        <Text fontSize='sm' fontWeight='bold' color='gray.400'>
                           {item.category.country}, {item.category.province},{' '}
                           {item.category.city}
                         </Text>
-                        <Text fontWeight='bold' fontSize='sm' color="gray.400">
-                          Located {(getPreciseDistance(
-                            { latitude: -6.201148, longitude: 106.950827 },
-                            { latitude: item.category.locationDetail.coordinates[0], longitude: item.category.locationDetail.coordinates[1] }
-                          ) / 1000).toFixed(2)} Km from Jakarta
+                        <Text fontWeight='bold' fontSize='sm' color='gray.400'>
+                          Located{' '}
+                          {(
+                            getPreciseDistance(
+                              { latitude: -6.201148, longitude: 106.950827 },
+                              {
+                                latitude:
+                                  item.category.locationDetail.coordinates[0],
+                                longitude:
+                                  item.category.locationDetail.coordinates[1],
+                              }
+                            ) / 1000
+                          ).toFixed(2)}{' '}
+                          Km from Jakarta
                         </Text>
                         <Text mt='2' fontWeight='bold' fontSize='sm'>
-                          {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.rooms[0].price)}
+                          {new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                          }).format(item.rooms[0].price)}
                         </Text>
                       </Box>
                     </Box>

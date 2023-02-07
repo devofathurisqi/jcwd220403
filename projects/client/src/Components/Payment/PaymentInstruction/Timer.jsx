@@ -1,11 +1,7 @@
-import { Box, Heading, Skeleton, Text } from '@chakra-ui/react';
+import { Box, Heading, Text } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
-// import { useParams } from 'react-router-dom';
-// import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 
 function Timer({ payment }) {
-  // const params = useParams();
-
   const trasactionCreated = new Date(payment.createdAt);
 
   const expiredTime = new Date(
@@ -41,13 +37,13 @@ function Timer({ payment }) {
 
   const timerComponents = [];
 
-  Object.keys(timeLeft).forEach((interval) => {
+  Object.keys(timeLeft).forEach((interval, index) => {
     if (!timeLeft[interval]) {
       return;
     }
 
     timerComponents.push(
-      <span>
+      <span key={index}>
         {timeLeft[interval]} {interval}{' '}
       </span>
     );

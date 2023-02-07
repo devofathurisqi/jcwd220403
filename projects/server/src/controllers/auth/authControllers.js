@@ -152,7 +152,7 @@ module.exports = {
           where: {
             userId: emailExist.id,
             device,
-            browser,
+            browser: browser || null,
           },
           defaults: { refreshToken },
         });
@@ -164,7 +164,7 @@ module.exports = {
               where: {
                 userId: emailExist.id,
                 device,
-                browser,
+                browser: browser || null,
               },
             }
           );

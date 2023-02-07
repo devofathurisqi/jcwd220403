@@ -12,6 +12,7 @@ const privateTransactionRouters = require('./transaction/privateTransactionRoute
 const propertyRouters = require('./property/propertyRouters');
 const paymentRouters = require('./transaction/paymentRouters');
 const paymentMethodRouter = require('./transaction/paymentMethodRouter');
+const reviewRouter = require('./review/reviewRouter');
 
 module.exports = {
   userRouters,
@@ -28,4 +29,5 @@ module.exports = {
   propertyRouters,
   paymentRouters,
   paymentMethodRouter,
+  reviewRouter,
 };

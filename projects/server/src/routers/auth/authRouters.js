@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const middlewareDetect = require('../../middlewares/deviceDetector');
 
 const { authControllers } = require('../../controllers');
 
@@ -19,6 +20,7 @@ router.post(
   '/api/login',
   loginValidation,
   runValidation,
+  middlewareDetect,
   authControllers.login
 );
 router.post('/api/verification/', authControllers.verification);

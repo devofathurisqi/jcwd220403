@@ -17,22 +17,6 @@ const handleRefreshToken = async (req, res) => {
     },
   });
   if (!foundUser) {
-    jwt.verify(
-      refreshToken,
-      process.env.REFRESH_TOKEN_SECRET_KEY,
-      async (err, decoded) => {
-        if (err) return res.sendStatus(403);
-        //hacked user
-        await userLogin.update(
-          { refreshToken: null },
-          {
-            where: {
-              email: decoded.email,
-            },
-          }
-        );
-      }
-    );
     return res.sendStatus(403);
   }
 

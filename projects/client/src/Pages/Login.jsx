@@ -147,13 +147,7 @@ export default function LoginCard() {
                       </Text>
                     </Stack>
                     <Button
-                      bg={'blue.400'}
-                      color={'white'}
-                      _hover={{
-                        bg: 'blue.500',
-                      }}
                       type='submit'
-                      variant='outline'
                       colorScheme='teal'
                       disabled={disableSubmitBtn}
                     >

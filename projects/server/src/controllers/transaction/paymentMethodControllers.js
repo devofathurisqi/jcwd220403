@@ -1,11 +1,11 @@
 const database = require('../../models');
-const paymentMethod = database.paymentMethod;
+const paymentmethod = database.paymentmethod;
 
 const getPaymentMethod = async (req, res) => {
   try {
     const { paymentMethodId } = req.params;
 
-    const getData = await paymentMethod.findOne({
+    const getData = await paymentmethod.findOne({
       where: { id: paymentMethodId },
     });
 

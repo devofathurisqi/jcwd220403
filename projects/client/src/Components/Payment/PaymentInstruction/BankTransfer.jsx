@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import axios from '../../../api/axios';
-import { useParams } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import Timer from './Timer';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
@@ -29,7 +29,14 @@ export default function BankTransfer({ data }) {
   const [selectedFile, setSelectedFile] = useState();
   const [errorMessageForFile, setErrorMessageForFile] = useState('');
   const [disableSubmitBtn, setDisableSubmitBtn] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
   const params = useParams();
+
+  const handleRedirect = () => {
+    setInterval(() => {
+      setSubmitSuccess(true);
+    }, 3000);
+  };
   const totalDay = () => {
     return Math.floor(
       (new Date(data[0].checkOut).getTime() -
@@ -93,12 +100,13 @@ export default function BankTransfer({ data }) {
           },
           error: {
             render({ data }) {
-              return `${data.response.data.message}`;
+              return `${data.response.data}`;
             },
           },
         },
         { position: toast.POSITION.TOP_CENTER }
       );
+      handleRedirect();
     } catch (error) {
       console.log(error);
     }
@@ -108,6 +116,7 @@ export default function BankTransfer({ data }) {
   useEffect(() => {
     getBankData();
     getpaymentData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
   function priceInCurrency() {
@@ -150,7 +159,8 @@ export default function BankTransfer({ data }) {
               height='40px'
               width='40px'
               display='flex'
-              backgroundImage={`url('http://localhost:2000/BankLogo/${bank.logo}')`}
+              backgroundImage={`url('${process.env.REACT_APP_URL_PUBLIC}
+                            bankLogo/${bank.logo}')`}
               backgroundSize='contain'
               backgroundRepeat='no-repeat'
               backgroundPosition='top'
@@ -201,10 +211,11 @@ export default function BankTransfer({ data }) {
       <Button
         colorScheme='teal'
         onClick={submitPaymentProof}
-        disabled={disableSubmitBtn}
+        isDisabled={disableSubmitBtn}
       >
         I Have Completed Payment
       </Button>
+      {submitSuccess && <Navigate to='/' />}
     </Stack>
   );
 }

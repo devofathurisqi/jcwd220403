@@ -29,6 +29,7 @@ export default function PaymentInstruction() {
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isloading]);
 
   return isloading ? (

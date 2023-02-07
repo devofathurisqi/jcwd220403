@@ -14,6 +14,7 @@ const registerAsTenantController = require('./registerAsTenantController');
 const propertyControllers = require('./property/propertyControllers');
 const reportControllers = require('./reportControllers');
 const paymentMethodControllers = require('./transaction/paymentMethodControllers');
+const reviewControllers = require('./review/reviewControllers');
 
 module.exports = {
   authControllers,
@@ -32,4 +33,5 @@ module.exports = {
   reportControllers,
   paymentController,
   paymentMethodControllers,
+  reviewControllers,
 };

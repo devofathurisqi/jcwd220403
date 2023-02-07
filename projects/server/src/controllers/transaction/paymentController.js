@@ -2,6 +2,7 @@ const database = require('../../models');
 const path = require('path');
 const { sequelize } = require('../../models');
 const payment = database.payment;
+const transaction = database.transaction;
 
 const addPayment = async (req, res) => {
   try {
@@ -14,7 +15,7 @@ const addPayment = async (req, res) => {
 
     const addPayment = await payment.create({
       transactionId,
-      paymentMethodId,
+      paymentmethodId: paymentMethodId,
       total,
     });
 
@@ -29,7 +30,7 @@ const addPayment = async (req, res) => {
     WHERE payments.id = ${addPayment.id};
     `);
 
-    res.status(200).send({
+    res.status(201).send({
       message:
         'Payment method succesfully added, please check your transaction instruction',
       data: addPayment,
@@ -65,13 +66,26 @@ const uploadPaymentProof = async (req, res) => {
 
   const filename = `receipt${transactionId}${extensionName}`;
 
-  const addPaymentProof = await payment.update(
+  await payment.update(
     { paymentProof: filename },
     { where: { transactionId } }
   );
 
+  await transaction.update(
+    {
+      transactionStatus: 'Menunggu Konfirmasi Pembayaran',
+    },
+    {
+      where: { id: transactionId },
+    }
+  );
+
+  const paymentData = await payment.findOne({
+    where: { transactionId },
+  });
+
   await sequelize.query(`
-  DROP EVENT IF EXISTS payment_${addPaymentProof.id};
+  DROP EVENT IF EXISTS payment_${paymentData.id};
   `);
 
   await paymentProof.mv('./src/public/paymentProof/' + filename, (err) => {
@@ -83,7 +97,7 @@ const uploadPaymentProof = async (req, res) => {
   res.status(200).send({
     message:
       'File is successfully uploaded, please wait for the verification process',
-    data: addPaymentProof,
+    data: paymentData,
   });
 };
 

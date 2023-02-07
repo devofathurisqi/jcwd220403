@@ -29,7 +29,7 @@ export default function VerifyEmailForm() {
 
   const handleOTP = (e) => {
     setOTP(e.target.value);
-    console.log(OTP);
+    // console.log(OTP);
   };
 
   const resendOTP = async () => {
@@ -99,6 +99,7 @@ export default function VerifyEmailForm() {
     return () => {
       clearInterval(interval);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seconds]);
 
   return verified ? (
@@ -169,19 +170,19 @@ export default function VerifyEmailForm() {
               style={
                 seconds > 0 || minutes > 0
                   ? {
-                    border: '1px solid grey',
-                    background: 'grey',
-                    padding: '4px',
-                    borderRadius: '5px',
-                    color: 'darkgrey',
-                  }
+                      border: '1px solid grey',
+                      background: 'grey',
+                      padding: '4px',
+                      borderRadius: '5px',
+                      color: 'darkgrey',
+                    }
                   : {
-                    border: '1px solid orange',
-                    background: 'orange',
-                    padding: '4px',
-                    borderRadius: '5px',
-                    color: 'white',
-                  }
+                      border: '1px solid orange',
+                      background: 'orange',
+                      padding: '4px',
+                      borderRadius: '5px',
+                      color: 'white',
+                    }
               }
               onClick={resendOTP}
             >

@@ -37,7 +37,7 @@ export default function Register() {
     password: Yup.string()
       .required('Please enter your password')
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*.,])(?=.{8,})/,
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*.,])(?=.{8,})/,
         'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number, and One Special Character'
       ),
     repeatPassword: Yup.string().oneOf(
@@ -208,15 +208,7 @@ export default function Register() {
                             style={{ color: 'red' }}
                           />
                         </FormControl>
-                        <Button
-                          type='submit'
-                          width='100%'
-                          bg={'blue.400'}
-                          color={'white'}
-                          _hover={{
-                            bg: 'blue.500',
-                          }}
-                        >
+                        <Button type='submit' width='100%' colorScheme={'teal'}>
                           Register
                         </Button>
                         <Divider />
