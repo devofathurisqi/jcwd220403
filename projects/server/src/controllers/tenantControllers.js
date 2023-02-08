@@ -325,6 +325,14 @@ module.exports = {
         try {
             const { country, province, city } = req.body
 
+            const getProperty = await database.property.findOne({
+                attributes : ['categoryId'],
+                where : {
+                    id : req.params.id
+                },
+                raw:true
+            })
+
             if (!country) throw "country is required"
             if (!province) throw "province is required"
             if (!city) throw "city is required"
@@ -349,7 +357,7 @@ module.exports = {
                 locationDetail: { type: 'Point', coordinates: result }
             }, {
                 where: {
-                    id: req.params.id
+                    id: getProperty.categoryId
                 }
             })
             res.status(200).send("Location detail updated")

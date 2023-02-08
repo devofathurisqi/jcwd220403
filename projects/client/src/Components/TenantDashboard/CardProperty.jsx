@@ -353,7 +353,6 @@ const CardProperty = () => {
         setLoad(false);
         getData();
         handleModalCloseLocation();
-        setCountry('');
         setProvince('');
         setCity('');
         toast({
