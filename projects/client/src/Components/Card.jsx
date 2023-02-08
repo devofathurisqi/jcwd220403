@@ -1,8 +1,6 @@
 import { Box, Text, Image, Flex, Center, Button, Skeleton, SkeletonText, Spacer } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { PulseLoader } from 'react-spinners';
-import { motion } from 'framer-motion';
 import axios from '../api/axios';
 import { Link } from 'react-router-dom';
 import useSearch from '../hooks/useSeacrh';
