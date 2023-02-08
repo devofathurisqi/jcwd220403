@@ -1,4 +1,4 @@
-import { Box, Text, Image, Flex, Center, Button, Skeleton, SkeletonText } from '@chakra-ui/react';
+import { Box, Text, Image, Flex, Center, Button, Skeleton, SkeletonText, Spacer } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { PulseLoader } from 'react-spinners';
@@ -93,7 +93,7 @@ function HomeCard() {
       <Flex flexWrap="Wrap" justifyContent="center" alignItems="center" gap="10px">
         {currentData && currentData.map((item, index) => (
           <Box key={index} width="280px" height="320px" boxShadow={activeIndex === index ? "dark-lg" : "md"}
-            borderRadius="10px" p={1} cursor="pointer" as={Link} to={'/detailpage/' + item.id}>
+            borderRadius="10px" p={1} cursor="pointer" as={Link} to={'/detailpage/' + item.id} position="relative">
             <Box>
               <Slider
                 dots={true}
@@ -160,7 +160,7 @@ function HomeCard() {
                   Km from Jakarta
                 </Skeleton>
               </Text>
-              <Text mt='3' fontWeight='bold' fontSize='sm' textAlign="center">
+              <Text fontWeight='bold' fontSize='sm' position="absolute" bottom="2" left="50%" transform="translateX(-50%)">
                 <Skeleton isLoaded={!loading} noOfLines={1}>
                   {new Intl.NumberFormat('id-ID', {
                     style: 'currency',
